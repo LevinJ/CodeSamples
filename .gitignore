@@ -1,28 +1,15 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+#elcipse temporary files
+*metadata/
 
 # Executables
-*.exe
-*.out
-*.app
+build/
+Debug/
+Release/
+debug/
+release/
+# Temporary files
+*~
+*.swp
+#third party library
+/boost_1_58_0/
+/gmock-1.7.0/
