@@ -1,6 +1,8 @@
 #elcipse temporary files
 RemoteSystemsTempFiles/
 .metadata/
+.buildpath
+.project
 
 # Executables
 build/
