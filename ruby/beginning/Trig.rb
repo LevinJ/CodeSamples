@@ -17,4 +17,7 @@ module Moral
    # ...
      puts "sin from Moral"
    end
+   def Moral.output2Bad(_bad)
+     puts ""
+   end
 end
