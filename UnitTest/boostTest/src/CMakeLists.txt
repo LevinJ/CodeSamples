@@ -3,7 +3,7 @@ project (main)
 FIND_PACKAGE( Boost 1.5 COMPONENTS program_options regex unit_test_framework REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
-ADD_EXECUTABLE( main testhello.cpp )
+ADD_EXECUTABLE( main UTDriver.cpp testhello.cpp testhello2.cpp)
 
 TARGET_LINK_LIBRARIES( main ${Boost_LIBRARIES} )
 
