@@ -3,7 +3,7 @@ RemoteSystemsTempFiles/
 .metadata/
 .buildpath
 .project
-
+.cproject
 # Executables
 build/
 Debug/
