@@ -53,4 +53,9 @@ end
 end
 
 
+20.times{|i| 
+puts i
+i = i+100
+}
+
 
