@@ -1,10 +1,10 @@
-
-#define BOOST_TEST_MAIN
-
-
 #include <boost/test/unit_test.hpp>
 #include <turtle/mock.hpp>
 
+BOOST_AUTO_TEST_CASE(universeInOrder22)
+{
+    BOOST_CHECK(6 == 5);
+}
 
 class view
 {
@@ -15,11 +15,17 @@ public:
 class calculator
 {
 public:
-    calculator( view& v );
+    calculator( view& v ){
+    m_v = &v;
+    }
 
-    void add( int a, int b ); // the result will be sent to the view 'v'
+    void add( int a, int b ){
+    	m_v->display(a+b);
+    }
+private:
+view *m_v;
+    
 };
-
 
 MOCK_BASE_CLASS( mock_view, view ) // declare a 'mock_view' class implementing 'view'
 {
