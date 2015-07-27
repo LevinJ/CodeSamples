@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 project (main)
 
 set(Boost_DEBUG ON)
-SET(BOOST_INCLUDEDIR "/home/developer/projects/CodeSamples/boost_1_58_0/build/include")
-SET(BOOST_LIBRARYDIR "/home/developer/projects/CodeSamples/boost_1_58_0/build/lib")
+SET(BOOST_INCLUDEDIR "../../../boost_1_58_0/build/include")
+SET(BOOST_LIBRARYDIR "../../../boost_1_58_0/build/lib")
 
 FIND_PACKAGE( Boost 1.58.0 COMPONENTS program_options regex unit_test_framework REQUIRED )
 
