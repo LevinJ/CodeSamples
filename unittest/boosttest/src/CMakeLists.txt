@@ -13,7 +13,7 @@ set(TURTLE_HEADERS  "../../../turtle-1.2.7/include")
 
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} ${TURTLE_HEADERS})
 
-ADD_EXECUTABLE( main UTDriver.cpp testcase.cpp testfixture.cpp testmock.cpp)
+ADD_EXECUTABLE( main UTDriver.cpp testcase.cpp testfixture.cpp testmock.cpp mock_returnexample.cpp)
 
 
 TARGET_LINK_LIBRARIES( main ${Boost_LIBRARIES} )
