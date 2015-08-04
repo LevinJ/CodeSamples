@@ -16,3 +16,4 @@ release/
 #third party library
 /boost_1_58_0/
 /gmock-1.7.0/
+/turtle-1.2.7/
