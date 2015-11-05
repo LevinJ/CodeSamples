@@ -4,6 +4,7 @@ RemoteSystemsTempFiles/
 .buildpath
 .project
 .cproject
+*.bin
 # Executables
 build/
 Debug/
