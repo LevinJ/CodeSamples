@@ -54,8 +54,14 @@ def getErrorCategory(failedinstallation,line):
         return "PRC"
     if 'FAILED: Target: DEC/RebootKernel installation failed, error: eInstallTimeout' in line:
         return "USB"
-    if 'SSC installation: getSscLease() failed, package not installed !!' in line:
-        return "SSC"
+    if 'exception: ' in line:
+        return "PRC_LZMA"
+    if 'eInstallTimeout' in line:
+        return "eInstallTimeout"
+    if 'eUnknownError' in line:
+        return "eUnknownError"
+    if 'eConfigError' in line:
+        return "eConfigError"
     if 'install operation failed due to exception!' in line:
         return "PRC"
     return "Others"
@@ -100,7 +106,7 @@ def processtheline(line):
             #return here since we've reached the end of this iteration
             return
         #find the first occurence of failure, log it and then start next iteration
-        if 'failed' in line:
+        if ('failed' in line) or ('exception: ' in line):
             current_state="searchRealFailureOrEnd"
             current_failureLine=line
             print(getLoopNumber(current_loopStr))
