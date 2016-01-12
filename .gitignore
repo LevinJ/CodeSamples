@@ -20,3 +20,5 @@ release/
 /gmock-1.7.0/
 /turtle-1.2.7/
 *.csv
+python/load_statistics/log.txt
+.settings/

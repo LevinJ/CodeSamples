@@ -88,11 +88,20 @@ def procesSda(line):
         searchObj = re.search( r'(.*) (.*) /sda_ram/SdaApplication(.*)', line, re.M|re.I)
         global_itemdict['process_sda']={}
         global_itemdict['process_sda']['cpuper'] = searchObj.group(2)
-        
+
+def procesCanSpy(line):
+#     print("processSda")
+    if r'/data/utilities/CanSpy' in line:
+        global global_itemdict
+        searchObj = re.search( r'(.*) (.*) /data/utilities/CanSpy(.*)', line, re.M|re.I)
+        global_itemdict['process_CanSpy']={}
+        global_itemdict['process_CanSpy']['cpuper'] = searchObj.group(2)
+                
 def processExtractPrc(line):
 #     print("processExtractPrc")
     processCooridnator(line)
     procesSda(line)
+    procesCanSpy(line)
     
 def addDicItem():
     global global_current_state

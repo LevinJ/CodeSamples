@@ -1,0 +1,1 @@
+top -d 1 -b > log.txt
