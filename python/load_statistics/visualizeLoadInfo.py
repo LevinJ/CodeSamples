@@ -44,6 +44,11 @@ def transformData(global_loadinfoList):
         
 def saveCSV(tempDict):
     df =  pd.DataFrame(tempDict)
+    dispres = df[['cpu_list','sda_cpu_list','coord_cpu_list','canspy_cpu_list','load_list','mem_free_list']].describe()
+    print dispres
+    plt.figure(2)
+    plt.text(0, 0.15, dispres)
+    plt.savefig('summary.pdf')
     df.to_csv("loadinfo.csv")
 #     df.to_csv("loadinfo.csv",header=True,cols=['id_list', 'cpu_list', 'sda_cpu_list', 'coord_cpu_list','load_list','mem_free_list'])
     return
@@ -64,6 +69,8 @@ def drawScatter(global_loadinfoList):
     
     ax=plt.subplot(312)
     ax.plot(tempDict['id_list'], tempDict['load_list'],label="load status")
+    idlength = tempDict['id_list'].shape[0]
+    ax.plot(tempDict['id_list'], np.ones(idlength),label="Caution level")
     plt.ylabel('load percentage')
     plt.xlabel('Polling ID')
     ax.legend(loc='upper right', shadow=True)
@@ -73,4 +80,5 @@ def drawScatter(global_loadinfoList):
     plt.ylabel('Memory status')
     plt.xlabel('Polling ID')
     ax.legend(loc='upper right', shadow=True)
+    plt.savefig('loadtrend.pdf')
     plt.show()
