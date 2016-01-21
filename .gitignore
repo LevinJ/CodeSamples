@@ -22,3 +22,5 @@ release/
 *.csv
 python/load_statistics/log.txt
 .settings/
+python/load_statistics/*.txt
+python/load_statistics/temp/
