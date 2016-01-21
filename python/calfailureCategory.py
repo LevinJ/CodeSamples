@@ -45,13 +45,12 @@ current_state="searchStart"
 current_loopStr=""
 wb = Workbook()
 ws = wb.active
-ws.append(["NO", "RealFailure","Category","Loop", "Failure details"])
+ws.append(["NO", "RealFailure","Category","Loop", "USB issue times","Failure details"])
 current_numId=0
 current_failureLine=""
 current_errorcategory=""
+current_usbfailedtimes=0
 def getErrorCategory(failedinstallation,line):
-    if not failedinstallation:
-        return "PRC"
     if 'FAILED: Target: DEC/RebootKernel installation failed, error: eInstallTimeout' in line:
         return "USB"
     if 'exception: ' in line:
@@ -64,6 +63,8 @@ def getErrorCategory(failedinstallation,line):
         return "eConfigError"
     if 'install operation failed due to exception!' in line:
         return "PRC"
+    if not failedinstallation:
+        return "PRC"
     return "Others"
 def getLoopNumber(line):
     m = re.search('this is loop (.*) out of', line)
@@ -71,6 +72,12 @@ def getLoopNumber(line):
         loopnum = m.group(1)
         return loopnum
     return "NOT FOUND"
+
+def markUSBfailedTimes(line):
+    global current_usbfailedtimes
+    if 'ProductionScripts::Prc::Process::Packages::Verify ' in line:
+        current_usbfailedtimes = current_usbfailedtimes + 1
+        
 def processtheline(line):
     global current_state
     global current_loopStr
@@ -78,10 +85,13 @@ def processtheline(line):
     global current_failureLine
     global current_errorcategory
     global ws;
+    global current_usbfailedtimes
+    markUSBfailedTimes(line)
     if(current_state=="searchStart"):
         if 'this is loop' in line:
             current_state="searchFailureorEnd"
             current_loopStr = line
+            current_usbfailedtimes = 0
 #           print(line)
         #exit the search start state
         return
@@ -89,13 +99,13 @@ def processtheline(line):
         #find a false failure, log it and then start next iteration
         if '## total=' in line: 
             current_state="searchStart"
-            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_failureLine])
+            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_usbfailedtimes,current_failureLine])
             #return here since we've reached the end of this iteration
             return
         #find a real failure, log it and then start next iteration
         if 'Error: Installation failed at loop' in line:
             current_state="searchStart"
-            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr), current_failureLine])
+            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr), current_usbfailedtimes,current_failureLine])
             #return here since we've found the first error occurence
             return
         return
