@@ -9,6 +9,7 @@ import shutil
 import os
 import glob
 import re
+import rebootstatistics
 
 
 
@@ -45,11 +46,13 @@ current_state="searchStart"
 current_loopStr=""
 wb = Workbook()
 ws = wb.active
-ws.append(["NO", "RealFailure","Category","Loop", "USB issue times","Failure details"])
+ws.append(["NO", "RealFailure","Category","Loop", "SessionID","USB issue times","Failure details"])
 current_numId=0
 current_failureLine=""
 current_errorcategory=""
 current_usbfailedtimes=0
+current_sessionid = ''
+reboottimestatistic = rebootstatistics.rebootstatisticsProxy()
 def getErrorCategory(failedinstallation,line):
     if 'FAILED: Target: DEC/RebootKernel installation failed, error: eInstallTimeout' in line:
         return "USB"
@@ -73,6 +76,20 @@ def getLoopNumber(line):
         return loopnum
     return "NOT FOUND"
 
+def markSessionId(line):
+    global current_sessionid
+    if not 'ProductionScripts::Prc::Common::Session: created token session' in line:
+        return
+    #only process the first seesionid used to handle usb enumeration issue
+    if current_sessionid !='':
+        return
+
+    m = re.search('(.*)INFO -- ProductionScripts::Prc::Common::Session: created token session (.*)-(.*)-(.*)', line)
+    if m:
+        current_sessionid = m.group(4)
+        return
+    current_sessionid = "NOT FOUND"
+
 def markUSBfailedTimes(line):
     global current_usbfailedtimes
     if 'ProductionScripts::Prc::Process::Packages::Verify ' in line:
@@ -86,12 +103,17 @@ def processtheline(line):
     global current_errorcategory
     global ws;
     global current_usbfailedtimes
+    global reboottimestatistic
+    global current_sessionid
     markUSBfailedTimes(line)
+    markSessionId(line)
+    reboottimestatistic.processLine(line)
     if(current_state=="searchStart"):
         if 'this is loop' in line:
             current_state="searchFailureorEnd"
             current_loopStr = line
             current_usbfailedtimes = 0
+            current_sessionid = ''
 #           print(line)
         #exit the search start state
         return
@@ -99,13 +121,13 @@ def processtheline(line):
         #find a false failure, log it and then start next iteration
         if '## total=' in line: 
             current_state="searchStart"
-            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_usbfailedtimes,current_failureLine])
+            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_sessionid,current_usbfailedtimes,current_failureLine])
             #return here since we've reached the end of this iteration
             return
         #find a real failure, log it and then start next iteration
         if 'Error: Installation failed at loop' in line:
             current_state="searchStart"
-            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr), current_usbfailedtimes,current_failureLine])
+            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr),current_sessionid, current_usbfailedtimes,current_failureLine])
             #return here since we've found the first error occurence
             return
         return
@@ -128,6 +150,7 @@ def processtheline(line):
     
 def main():
     global wb
+    global reboottimestatistic
     options = parse_arguments()   
     print (options)
     with open(options.input_path) as f:
@@ -136,17 +159,22 @@ def main():
 #     with open(options.input_path) as f:
 #         for line in f:  
 #     wb.save("sample.xlsx")
-    wb.save(options.input_path+".xlsx")   
+    wb.save(options.input_path+".xlsx")  
+    reboottimestatistic.getFinalResult() 
     return
       
 main()
 
 def test():
-    wb = Workbook()
-    ws = wb.active
-    ws.append(["NO", "Loop", "Failure details"])
-    ws.append([4, 5, 6])
-    wb.save("sample.xlsx")
-    print("ok")
+#     wb = Workbook()
+#     ws = wb.active
+#     ws.append(["NO", "Loop", "Failure details"])
+#     ws.append([4, 5, 6])
+#     wb.save("sample.xlsx")
+#     print("ok")
+    global current_sessionid
+    line = r'I, [2016-01-21T20:34:02.605865 #9160]  INFO -- ProductionScripts::Prc::Common::Session: created token session 947409-589761-207319'
+    markSessionId(line)
+    print(current_sessionid)
     return
 # test()
