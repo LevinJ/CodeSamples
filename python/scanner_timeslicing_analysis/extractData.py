@@ -3,6 +3,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import os
+import visualizedata
 
 class Extract_Data_Proxy:
     def __init__(self):
@@ -74,6 +75,9 @@ class Extract_Data_Proxy:
         return tempStr
 #         return line[-14:-2] 
     def calStatistics(self):
+#         tempIndex = self.overallStats["loopid"]
+#         tempDict = {"orbDuration": self.overallStats["orbDuration"], 'noteProcDuration':self.overallStats["noteProcDuration"]}
+#         df = pd.DataFrame(tempDict, index=tempIndex)
         df = pd.DataFrame(self.overallStats)
         print df.describe()
         df.to_csv("data.csv")
@@ -101,6 +105,8 @@ class Extract_Data_Proxy:
                         return
         print 'Ignroed record count: ', self.ignoredRecCount
         self.calStatistics()
+        visu = visualizedata.visualizedataProxy()
+        visu.drawLines()
         return
     
     
