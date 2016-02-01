@@ -14,6 +14,7 @@ class Extract_Data_Proxy:
                              'noteendline': {'keysubstr':'StateMgr ProcessJobs end:', 'nextstate':'loopidline','rawline':''},}
         
         self.overallStats = {'loopid': [], 'orbDuration':[], 'noteProcDuration': []}
+        self.ignoredRecCount = 0
 #         self.overallStats = {'loopid': [], 'orbDuration':[], 'noteProcDuration': [], 'loopidline':[],'orbstartline':[],'orbendline':[],'notestartline':[],'noteendline':[]}
         return
     def processLine_protected(self,line):
@@ -35,14 +36,17 @@ class Extract_Data_Proxy:
             self.current_state = self.rawlinesDict[self.current_state]['nextstate']
         return           
     def processrecord(self): 
-        self.overallStats['orbDuration'].append(self.getOrbDuration())
-        self.overallStats['noteProcDuration'].append(self.getNoteProcDuration())
-        self.overallStats['loopid'].append(self.getCurrentLoopId())
-#         self.overallStats['loopidline'].append(self.rawlinesDict['loopidline']['rawline'])
-#         self.overallStats['orbstartline'].append(self.rawlinesDict['loopidline']['rawline'])
-#         self.overallStats['orbendline'].append(self.rawlinesDict['loopidline']['rawline'])
-#         self.overallStats['notestartline'].append(self.rawlinesDict['loopidline']['rawline'])
-#         self.overallStats['noteendline'].append(self.rawlinesDict['loopidline']['rawline'])
+        try:
+            orbDuration = self.getOrbDuration()
+            noteProcDuration = self.getNoteProcDuration()
+            currentLoopId = self.getCurrentLoopId()
+            
+            self.overallStats['orbDuration'].append(orbDuration)
+            self.overallStats['noteProcDuration'].append(noteProcDuration)
+            self.overallStats['loopid'].append(currentLoopId)
+        except Exception as inst:
+            self.ignoredRecCount = self.ignoredRecCount + 1
+            print "XXXXXXX Ignore the recordXXXXXX", inst, self.rawlinesDict['loopidline']['rawline']
         return 
     def getCurrentLoopId(self): 
         loopline = self.rawlinesDict['loopidline']['rawline']
@@ -64,7 +68,11 @@ class Extract_Data_Proxy:
             return 0
         return ((timeEnd -timeStart).microseconds)/1000
     def __getTime(self,line):
-        return line[-14:-2] 
+        tempStr = line[-14:-2]
+        if (tempStr[0] == ' '):
+            tempStr = '0' + tempStr[1:]
+        return tempStr
+#         return line[-14:-2] 
     def calStatistics(self):
         df = pd.DataFrame(self.overallStats)
         print df.describe()
@@ -91,6 +99,7 @@ class Extract_Data_Proxy:
                     res = self.processLine_protected(line)
                     if not res:
                         return
+        print 'Ignroed record count: ', self.ignoredRecCount
         self.calStatistics()
         return
     
@@ -98,5 +107,6 @@ class Extract_Data_Proxy:
 
 if __name__ == "__main__":
     obj = Extract_Data_Proxy()
-    obj.iterateFiles(r'C:\Projects\Issues\unexpected_notes\traces')
+#     obj.iterateFiles(r'C:\Projects\Issues\unexpected_notes\traces')
     obj.process(r'C:\Projects\Issues\unexpected_notes\traces')
+#     obj.process(r'C:\Projects\Issues\unexpected_notes\problems')
