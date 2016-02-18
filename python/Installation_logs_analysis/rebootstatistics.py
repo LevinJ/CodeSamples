@@ -42,7 +42,7 @@ class rebootstatistics:
                 'wholestartline' : np.array( self.startimelines_whole)}
         df =  pd.DataFrame(tempDict)
         print df.describe()
-#         df.to_csv(self.rebootname + ".csv")
+        df.to_csv(self.rebootname + ".csv")
         print "max duration record: " + str(df['duration'].idxmax())
         print df.loc[df['duration'].idxmax()][['duration','starTime','endTime']]
         return
