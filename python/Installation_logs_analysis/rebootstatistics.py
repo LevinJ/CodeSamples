@@ -2,6 +2,7 @@ import numpy as np
 from datetime import datetime
 import pandas as pd
 import re
+import rebootVisualize
 
 
 class rebootstatistics:
@@ -34,7 +35,7 @@ class rebootstatistics:
             self.startimelines_whole.append(self.startimeline_whole )
             return
         return
-    def getFinalResult(self):
+    def getFinalResult(self,savefilepath):
         print self.rebootname + " statistics"
         tempDict = {'starTime' :  np.array(self.startimelines),
                 'endTime' : np.array(self.endtimelines),
@@ -42,7 +43,7 @@ class rebootstatistics:
                 'wholestartline' : np.array( self.startimelines_whole)}
         df =  pd.DataFrame(tempDict)
         print df.describe()
-        df.to_csv(self.rebootname + ".csv")
+        df.to_csv(savefilepath + self.rebootname + ".csv")
         print "max duration record: " + str(df['duration'].idxmax())
         print df.loc[df['duration'].idxmax()][['duration','starTime','endTime']]
         return
@@ -69,9 +70,11 @@ class rebootstatisticsProxy:
         self.ramkernel.processLine(line)
         self.kernel.processLine(line)
         return
-    def getFinalResult(self):
-        self.ramkernel.getFinalResult()
-        self.kernel.getFinalResult()
+    def getFinalResult(self,savefilepath):
+        self.ramkernel.getFinalResult(savefilepath)
+        self.kernel.getFinalResult(savefilepath)
+        obj = rebootVisualize.visualizedataProxy()
+        obj.drawHist(savefilepath)
 
 # test =  rebootstatistics('RebootKernelRam') 
 # start = r'I, [2016-01-21T06:24:18.203720 #9160]  INFO -- ProductionScripts::Prc::Process::Packages::Install: event: [Info] => [DEC/RebootKernelRam] Begin installing target. Timeout value: 60[s]'
