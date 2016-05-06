@@ -25,3 +25,5 @@ python/load_statistics/log.txt
 python/load_statistics/*.txt
 python/load_statistics/temp/
 *.pyc
+*.trc
+*.prefs
