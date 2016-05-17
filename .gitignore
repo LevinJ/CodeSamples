@@ -27,3 +27,6 @@ python/load_statistics/temp/
 *.pyc
 *.trc
 *.prefs
+python/visualizeStateMachine/nhc.txt
+python/visualizeStateMachine/nhc.txt.xml
+python/visualizeStateMachine/CoordinatorTraceServer-203.0.113.1.trc.xml

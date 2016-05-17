@@ -1,15 +1,17 @@
-
-from python.utility.LogParsing import LogParsing
 from buildsatemachine import BuildSateMachine
 import re
+import sys
+sys.path.append("../../")
+print(sys.path)
+from python.utility.LogParsing import LogParsing
 
-class ParseStateMachine(LogParsing):
+class ParseDecTraces(LogParsing):
     def __init__(self, buildsstatemachine):
         self.startProcess = False
         self.buildsstatemachine = buildsstatemachine
         return
     def processDone(self):
-        self.buildsstatemachine.saveOutput()
+        self.buildsstatemachine.saveOutput(self.filename + '.xml')
         return
     def processLine(self, line):
         if (not self.startProcess):
@@ -44,5 +46,5 @@ class ParseStateMachine(LogParsing):
     
     
 if __name__ == "__main__":   
-    obj= ParseStateMachine(BuildSateMachine())
+    obj= ParseDecTraces(BuildSateMachine())
     obj.run()

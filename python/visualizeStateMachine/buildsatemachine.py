@@ -21,9 +21,9 @@ class BuildSateMachine:
         self.cur_stack[-1].append(newElement)
         self.cur_stack.append(newElement)
         return
-    def saveOutput(self):
+    def saveOutput(self, filename):
         print etree.tostring(self.tree, pretty_print=True) 
-        self.tree.write('output.xml')
+        self.tree.write(filename)
         return
     def test(self):
         # create XML 

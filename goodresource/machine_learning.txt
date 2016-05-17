@@ -5,3 +5,7 @@ http://spartanideas.msu.edu/2014/07/11/about-feature-scaling-and-normalization/
 K-means
 
 http://www.naftaliharris.com/blog/visualizing-k-means-clustering/
+
+
+Interpretation of the Principal Components
+https://onlinecourses.science.psu.edu/stat505/node/54

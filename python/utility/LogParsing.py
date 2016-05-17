@@ -12,6 +12,7 @@ class LogParsing:
     def processFile(self):
         options = self.parse_arguments()
         filename = options.input_path
+        self.filename = filename
         with open(filename) as f:
                 for line in f:
                     self.processLine(line)
