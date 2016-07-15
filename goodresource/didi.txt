@@ -1,0 +1,59 @@
+
+
+Rossmann Store Sales, Winner's Interview: 1st place
+http://blog.kaggle.com/2015/12/21/rossmann-store-sales-winners-interview-1st-place-gert/
+
+As a beginner, what should I do to excel at Kaggle problems?
+https://www.quora.com/As-a-beginner-what-should-I-do-to-excel-at-Kaggle-problems#!n=12
+
+Estimating Rainfall From Weather Radar Readings Using Recurrent Neural Networks
+http://simaaron.github.io/Estimating-rainfall-from-weather-radar-readings-using-recurrent-neural-networks/
+
+
+Homesite Quote Conversion, Winners' Write-Up, 1st 
+http://blog.kaggle.com/2016/04/08/homesite-quote-conversion-winners-write-up-1st-place-kazanova-faron-clobber/
+
+Optimizing your model with cross-validation
+http://blog.kaggle.com/2015/06/29/scikit-learn-video-7-optimizing-your-model-with-cross-validation/comment-page-1/
+
+
+
+My Top 10% Solution for Kaggle Rossman Store Sales Forecasting Competition
+http://mabrek.github.io/blog/kaggle-forecasting
+
+
+
+https://www.kaggle.com/c/the-analytics-edge-mit-15-071x/forums/t/7837/cross-validation-the-right-and-the-wrong-way
+Cross-validation: the right and the wrong way
+
+How to Tuning XGboost in an efficient way
+https://www.kaggle.com/forums/f/15/kaggle-forum/t/17120/how-to-tuning-xgboost-in-an-efficient-way
+
+
+
+Data Science: A Kaggle Walkthrough ¨C Data Transformation and Feature Extraction
+http://brettromero.com/wordpress/data-science-kaggle-walkthrough-data-transformation-feature-extraction/
+
+
+
+Profiling Top Kagglers: Gilberto Titericz, New #1 in the World
+http://blog.kaggle.com/2015/11/09/profiling-top-kagglers-gilberto-titericz-new-1-in-the-world/
+
+
+
+Using k-fold cross-validation for time-series model selection
+http://stats.stackexchange.com/questions/14099/using-k-fold-cross-validation-for-time-series-model-selection
+
+6 Tricks I Learned From The OTTO Kaggle Challenge ¡ª Medium
+https://medium.com/@chris_bour/6-tricks-i-learned-from-the-otto-kaggle-challenge-a9299378cd61#.iz97btlae
+
+
+Complete Guide to Parameter Tuning in Gradient Boosting (GBM) in Python
+http://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/
+
+Learning from the best
+http://blog.kaggle.com/2014/08/01/learning-from-the-best/
+
+
+illustration of error metrics
+http://demandplanning.net/documents/dmdaccuracywebVersions.pdf
