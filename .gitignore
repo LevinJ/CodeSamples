@@ -27,3 +27,4 @@ python/load_statistics/temp/
 *.pyc
 *.trc
 *.prefs
+mnist/
