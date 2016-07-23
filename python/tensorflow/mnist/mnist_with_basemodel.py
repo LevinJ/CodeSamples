@@ -10,7 +10,7 @@ from tensorflow.examples.tutorials.mnist import input_data
     
 class TFModel(object):
     def __init__(self):
-        self.num_steps = 1000
+        self.num_steps = 100
         self.batch_size = 100
         self.summaries_dir = '/tmp/mnist_logs2'
         self.dropout= 0.9
@@ -49,20 +49,21 @@ class TFModel(object):
         """
         # Adding a name scope ensures logical grouping of the layers in the graph.
         with tf.name_scope(layer_name):
-            weights = self.weight_variable([input_dim, output_dim])
-            self.variable_summaries(weights, layer_name + '/weights')
-        with tf.name_scope('biases'):
-            biases = self.bias_variable([output_dim])
-            self.variable_summaries(biases, layer_name + '/biases')
-        with tf.name_scope('Wx_plus_b'):
-            preactivate = tf.matmul(input_tensor, weights) + biases
-            tf.histogram_summary(layer_name + '/pre_activations', preactivate)
-        activations = act(preactivate, 'activation')
-        tf.histogram_summary(layer_name + '/activations', activations)
+            with tf.name_scope('weights'):
+                weights = self.weight_variable([input_dim, output_dim])
+                self.variable_summaries(weights, layer_name + '/weights')
+            with tf.name_scope('biases'):
+                biases = self.bias_variable([output_dim])
+                self.variable_summaries(biases, layer_name + '/biases')
+            with tf.name_scope('Wx_plus_b'):
+                preactivate = tf.matmul(input_tensor, weights) + biases
+                tf.histogram_summary(layer_name + '/pre_activations', preactivate)               
+            activations = act(preactivate, 'activation')
+            tf.histogram_summary(layer_name + '/activations', activations)
+            
         return activations
     def dropout_layer(self, to_be_dropped_layer):
         with tf.name_scope('dropout'):
-            self.keep_prob = tf.placeholder(tf.float32)
             tf.scalar_summary('dropout_keep_probability', self.keep_prob)
             dropped = tf.nn.dropout(to_be_dropped_layer, self.keep_prob)
             return dropped
@@ -124,6 +125,7 @@ class MnistTFModel(TFModel):
         with tf.name_scope('input'):
             self.x = tf.placeholder(tf.float32, [None, 784], name='x-input')
             self.y_true = tf.placeholder(tf.float32, [None, 10], name='y-input')
+        self.keep_prob = tf.placeholder(tf.float32, name='drop_out')
         # below is just for the sake of visualization
         with tf.name_scope('input_reshape'):
             image_shaped_input = tf.reshape(self.x, [-1, 28, 28, 1])
@@ -177,7 +179,7 @@ class MnistTFModel(TFModel):
         with tf.Session(graph=self.graph) as sess:
             tf.initialize_all_variables().run()
             logging.debug("Initialized")
-            for step in range(self.num_steps):
+            for step in range(self.num_steps + 1):
                 summary, _ , acc_train= sess.run([self.merged, self.train_step, self.accuracy], feed_dict=self.feed_dict(True))
                 self.train_writer.add_summary(summary, step)
                 
