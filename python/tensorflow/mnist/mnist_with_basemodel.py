@@ -14,6 +14,9 @@ class TFModel(object):
         self.batch_size = 100
         self.summaries_dir = '/tmp/mnist_logs2'
         self.dropout= 0.9
+        root = logging.getLogger()
+        root.addHandler(logging.StreamHandler(sys.stdout))
+        root.setLevel(logging.DEBUG)
         return
     def get_input(self):
         pass
@@ -101,7 +104,6 @@ class TFModel(object):
 class MnistTFModel(TFModel):
     def __init__(self):
         TFModel.__init__(self)
-        logging.basicConfig(level = logging.DEBUG)
         return
     def add_visualize_node(self):
         # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
@@ -175,25 +177,22 @@ class MnistTFModel(TFModel):
         with tf.Session(graph=self.graph) as sess:
             tf.initialize_all_variables().run()
             logging.debug("Initialized")
-            for i in range(self.num_steps):
-                if i % 10 == 0:  # Record summaries and test-set accuracy
-                    summary, acc = sess.run([self.merged, self.accuracy], feed_dict=self.feed_dict(False))
-                    self.test_writer.add_summary(summary, i)
-                    print('Accuracy at step %s: %s' % (i, acc))
-                else:  # Record train set summaries, and train
-#                     if i % 100 == 99:  # Record execution stats
-#                         run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)
-#                         run_metadata = tf.RunMetadata()
-#                         summary, _ = sess.run([self.merged, self.train_step],
-#                                             feed_dict=self.feed_dict(True),
-#                                             options=run_options,
-#                                             run_metadata=run_metadata)
-#                         self.train_writer.add_run_metadata(run_metadata, 'step%d' % i)
-#                         self.train_writer.add_summary(summary, i)
-#                         print('Adding run metadata for', i)
-#                     else:  # Record a summary
-                    summary, _ = sess.run([self.merged, self.train_step], feed_dict=self.feed_dict(True))
-                    self.train_writer.add_summary(summary, i)
+            for step in range(self.num_steps):
+                summary, _ , acc_train= sess.run([self.merged, self.train_step, self.accuracy], feed_dict=self.feed_dict(True))
+                self.train_writer.add_summary(summary, step)
+                
+                if step % 10 == 0:
+                    summary, acc_test = sess.run([self.merged, self.accuracy], feed_dict=self.feed_dict(False))
+                    self.test_writer.add_summary(summary, step)
+                    logging.info("Step {}/{}, train: {:.3f}, test {:.3f}".format(step, self.num_steps, acc_train, acc_test))
+                
+#                 if step % 10 == 0:  # Record summaries and test-set accuracy
+#                     summary, acc = sess.run([self.merged, self.accuracy], feed_dict=self.feed_dict(False))
+#                     self.test_writer.add_summary(summary, step)
+#                     print('Accuracy at step %s: %s' % (step, acc))
+#                 else:  # Record train set summaries, and train
+#                     summary, _ = sess.run([self.merged, self.train_step], feed_dict=self.feed_dict(True))
+#                     self.train_writer.add_summary(summary, step)
         return
 
 
