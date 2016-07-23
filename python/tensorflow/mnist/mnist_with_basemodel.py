@@ -41,7 +41,10 @@ class TFModel(object):
             tf.scalar_summary('min/' + name, tf.reduce_min(var))
             tf.histogram_summary(name, var)
         return
-    def nn_layer(self,input_tensor, input_dim, output_dim, layer_name, act=tf.nn.relu):
+    def nn_layer(self,input_tensor, output_dim, layer_name, act=tf.nn.relu):
+        input_dim = input_tensor.get_shape()[-1].value
+        return self.nn_layer_(input_tensor, input_dim, output_dim, layer_name, act=act)
+    def nn_layer_(self,input_tensor, input_dim, output_dim, layer_name, act=tf.nn.relu):
         """Reusable code for making a simple neural net layer.
         It does a matrix multiply, bias add, and then uses relu to nonlinearize.
         It also sets up name scoping so that the resultant graph is easy to read,
@@ -63,8 +66,9 @@ class TFModel(object):
             
         return activations
     def dropout_layer(self, to_be_dropped_layer):
-        with tf.name_scope('dropout'):
-            tf.scalar_summary('dropout_keep_probability', self.keep_prob)
+        layer_id = int(to_be_dropped_layer.name.split('/')[0][-1])
+        with tf.name_scope('dropout' + str(layer_id)):
+#             tf.scalar_summary('dropout_keep_probability' + str(layer_id), self.keep_prob)
             dropped = tf.nn.dropout(to_be_dropped_layer, self.keep_prob)
             return dropped
 
@@ -74,7 +78,7 @@ class TFModel(object):
         pass
     def add_optimizer_node(self):
         pass
-    def add_modelusage_node(self):
+    def add_evalmetrics_node(self):
         pass
     def add_visualize_node(self):
         pass
@@ -85,7 +89,7 @@ class TFModel(object):
             self.add_inference_node()
             self.add_loss_node()
             self.add_optimizer_node()
-            self.add_modelusage_node()
+            self.add_evalmetrics_node()
             self.add_visualize_node()
         return
     def run_graph(self):
@@ -134,13 +138,20 @@ class MnistTFModel(TFModel):
         return
     def add_inference_node(self):
         #output node self.pred
-        hidden1 = self.nn_layer(self.x, 784, 500, 'layer1')
+#         hidden1 = self.nn_layer(self.x, 784, 500, 'layer1')
+#         dropped = self.dropout_layer(hidden1)
+#         self.y_pred = self.nn_layer(dropped, 500, 10, 'layer2', act=tf.nn.softmax)
+        hidden1 = self.nn_layer(self.x, 500, 'layer1')
         dropped = self.dropout_layer(hidden1)
-        self.y_pred = self.nn_layer(dropped, 500, 10, 'layer2', act=tf.nn.softmax)
+        
+        hidden1 = self.nn_layer(dropped, 200, 'layer2')
+        dropped = self.dropout_layer(hidden1)
+        
+        self.y_pred = self.nn_layer(dropped, 10, 'layer3', act=tf.nn.softmax)
         return
     def add_loss_node(self):
         #output node self.loss
-        with tf.name_scope('cross_entropy'):
+        with tf.name_scope('loss'):
             diff = self.y_true * tf.log(self.y_pred)
             with tf.name_scope('total'):
                 self.loss = -tf.reduce_mean(diff)
@@ -154,14 +165,14 @@ class MnistTFModel(TFModel):
         return
     def add_accuracy_node(self):
         #output node self.accuracy
-        with tf.name_scope('accuracy'):
+        with tf.name_scope('evaluationmetrics'):
             with tf.name_scope('correct_prediction'):
                 correct_prediction = tf.equal(tf.argmax(self.y_pred, 1), tf.argmax(self.y_true, 1))
             with tf.name_scope('accuracy'):
                 self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
             tf.scalar_summary('accuracy', self.accuracy)
         return
-    def add_modelusage_node(self):
+    def add_evalmetrics_node(self):
         self.add_accuracy_node()
         return
     def feed_dict(self,train):
