@@ -185,14 +185,6 @@ class MnistTFModel(TFModel):
                     summary, acc_test = sess.run([self.merged, self.accuracy], feed_dict=self.feed_dict(False))
                     self.test_writer.add_summary(summary, step)
                     logging.info("Step {}/{}, train: {:.3f}, test {:.3f}".format(step, self.num_steps, acc_train, acc_test))
-                
-#                 if step % 10 == 0:  # Record summaries and test-set accuracy
-#                     summary, acc = sess.run([self.merged, self.accuracy], feed_dict=self.feed_dict(False))
-#                     self.test_writer.add_summary(summary, step)
-#                     print('Accuracy at step %s: %s' % (step, acc))
-#                 else:  # Record train set summaries, and train
-#                     summary, _ = sess.run([self.merged, self.train_step], feed_dict=self.feed_dict(True))
-#                     self.train_writer.add_summary(summary, step)
         return
 
 
