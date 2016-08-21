@@ -1,12 +1,15 @@
 import logging
-# import sys
+import sys
 # 
 # 
 # 
-# logging.basicConfig(filename='example.log',level=logging.DEBUG)
-# root = logging.getLogger()
-# ch = logging.StreamHandler(sys.stdout)
-# root.addHandler(ch)
+# logging.basicConfig(level=logging.DEBUG)
+
+root = logging.getLogger()
+ch = logging.StreamHandler(sys.stdout)
+root.addHandler(ch)
+root.setLevel(logging.DEBUG)
+logging.info('So should this')
 # 
 # logging.debug('This message should go to the log file')
 # logging.info('So should this')
@@ -26,8 +29,9 @@ import logging
 
 # import logging
 # import sys
-# logging.basicConfig(format='%(levelname)s:%(name)s  %(message)s %(asctime)s')
-# root = logging.getLogger()
+# logging.basicConfig(format='%(levelname)s:%(name)s  %(message)s  %(pathname)s%(filename)s:%(lineno)d %(funcName)s%(asctime)s')
+# logging.warning('And this, too')
+
 # 
 # # root.addHandler(logging.StreamHandler(sys.stdout))
 # ch = logging.FileHandler('example.log', mode='w')
@@ -37,25 +41,25 @@ import logging
 # # logging.basicConfig(level=logging.DEBUG, format='%(levelname)s:%(name)s  %(message)s %(asctime)s')
 # 
 # 
-import sys
-_logger = logging.getLogger("tensorflow")
-
-
-_handler = logging.StreamHandler(sys.stdout)
-_handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT, None))
-_handler.addFilter(logging.Filter("tensorflow.monitor"))
-
-
-_logger.addHandler(_handler)
-_logger.setLevel(logging.INFO)
-
-_logger.info('VOWF F DS F ')
-
-
-_logger_monitor = logging.getLogger("tensorflow.monitor")
-_logger_monitor.info('child logger message')
-
+# import sys
+# _logger = logging.getLogger("tensorflow")
 # 
-# # logging.info('is when this event was logged.')
-# logger.info('another logger')
-# logger.warning('more     another logger')
+# 
+# _handler = logging.StreamHandler(sys.stdout)
+# _handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT, None))
+# _handler.addFilter(logging.Filter("tensorflow.monitor"))
+# 
+# 
+# _logger.addHandler(_handler)
+# _logger.setLevel(logging.INFO)
+# 
+# _logger.info('VOWF F DS F ')
+# 
+# 
+# _logger_monitor = logging.getLogger("tensorflow.monitor")
+# _logger_monitor.info('child logger message')
+# 
+# # 
+# # # logging.info('is when this event was logged.')
+# # logger.info('another logger')
+# # logger.warning('more     another logger')

@@ -57,3 +57,6 @@ http://blog.kaggle.com/2014/08/01/learning-from-the-best/
 
 illustration of error metrics
 http://demandplanning.net/documents/dmdaccuracywebVersions.pdf
+
+What are the main differences between TensorFlow and SciKit Learn?
+https://github.com/rasbt/mlxtend/blob/master/mlxtend/tf_classifier/tf_softmax.py

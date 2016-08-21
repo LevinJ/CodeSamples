@@ -9,3 +9,7 @@ http://www.naftaliharris.com/blog/visualizing-k-means-clustering/
 
 Interpretation of the Principal Components
 https://onlinecourses.science.psu.edu/stat505/node/54
+
+
+outlier
+http://www.itl.nist.gov/div898/handbook/prc/section1/prc16.htm

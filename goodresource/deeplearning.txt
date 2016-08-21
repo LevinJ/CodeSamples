@@ -1,0 +1,10 @@
+Stanford CS class CS231n: Convolutional Neural Networks for Visual Recognition. 
+
+http://cs231n.github.io/convolutional-networks/
+
+Github
+https://github.com/cthorey/CS231
+
+https://github.com/cs231n/cs231n.github.io
+
+This year there were six categories based on object detection, locating objects and classifying them. Winners included the National University of Singapore, the Oxford University, Adobe Systems, the Center for Intelligent Perception and Computing at the Chinese Academy of Sciences, as well as Google in two separate categories.
