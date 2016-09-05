@@ -27,10 +27,8 @@ python/load_statistics/temp/
 *.pyc
 *.trc
 *.prefs
-<<<<<<< HEAD
 python/visualizeStateMachine/nhc.txt
 python/visualizeStateMachine/nhc.txt.xml
 python/visualizeStateMachine/CoordinatorTraceServer-203.0.113.1.trc.xml
-=======
 mnist/
->>>>>>> 1bdd6d7dad96f69517980ed7ba2ac6719144aadd
+data/
