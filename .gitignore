@@ -32,3 +32,4 @@ python/visualizeStateMachine/nhc.txt.xml
 python/visualizeStateMachine/CoordinatorTraceServer-203.0.113.1.trc.xml
 mnist/
 data/
+tmp/
