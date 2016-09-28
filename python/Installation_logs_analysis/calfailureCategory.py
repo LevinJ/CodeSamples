@@ -30,6 +30,9 @@ def parse_arguments():
     parser.add_option("-i", "--input", dest="input_path",
                        metavar="FILE", type="string",
                        help="path to the installation result file")
+    parser.add_option("-d", "--directory", dest="input_directory",
+                       metavar="Directory", type="string",
+                       help="directory to the installation result files")
                                                   
     (options, args) = parser.parse_args()
     # print (options, args)
@@ -37,9 +40,12 @@ def parse_arguments():
     if options.input_path:
         if not os.path.exists(options.input_path):
             parser.error("Could not find the input file")
+    elif options.input_directory:
+        if not os.path.exists(options.input_directory):
+            parser.error("Could not find the input directory")
     else:
-        parser.error("'input' option is required to run this program")
-
+        parser.error("'input' or 'diretory' option is required to run this program")
+        
     return options 
 
 current_state="searchStart"
@@ -147,19 +153,41 @@ def processtheline(line):
             #return here since we've found the first error occurence
             return
         return
-    
+def process_one_file(file):
+    with open(file) as f:
+            for line in f:
+                processtheline(line)
+    return  
+def process_directory(dir):
+    all_files = []
+    for path, subdirs, files in os.walk(dir):
+        for name in files:
+            if not name.endswith('.log'):
+                continue
+            cur_file = os.path.join(path, name)
+            all_files.append(cur_file)
+    for f in all_files:
+        print("process file {}".format(f))
+        process_one_file(f)
+    return
 def main():
     global wb
     global reboottimestatistic
     options = parse_arguments()   
     print (options)
-    with open(options.input_path) as f:
-            for line in f:
-                processtheline(line)
+    if options.input_path:
+        process_one_file(options.input_path)
+        filename_prefix = options.input_path
+    else:
+        path,folder_name = os.path.split(options.input_directory)
+        filename_prefix = options.input_directory +"//" + folder_name+ "_summary"
+        process_directory(options.input_directory)
+        
+    
 #     with open(options.input_path) as f:
 #         for line in f:  
 #     wb.save("sample.xlsx")
-    wb.save(options.input_path+".xlsx")  
+    wb.save(filename_prefix+".xlsx")  
 #     reboottimestatistic.getFinalResult(options.input_path) 
     return
       
