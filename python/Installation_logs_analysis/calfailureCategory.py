@@ -52,7 +52,7 @@ current_state="searchStart"
 current_loopStr=""
 wb = Workbook()
 ws = wb.active
-ws.append(["NO", "RealFailure","Category","Loop", "SessionID","USB issue times","Failure details"])
+ws.append(["NO", "RealFailure","Category","Loop", "SessionID","USB issue times","Failure details", "LZMA_log_path"])
 current_numId=0
 current_failureLine=""
 current_errorcategory=""
@@ -101,7 +101,7 @@ def markUSBfailedTimes(line):
     if 'ProductionScripts::Prc::Process::Packages::Verify ' in line:
         current_usbfailedtimes = current_usbfailedtimes + 1
         
-def processtheline(line):
+def processtheline(line, file_path):
     global current_state
     global current_loopStr
     global current_numId
@@ -134,7 +134,7 @@ def processtheline(line):
         #find a real failure, log it and then start next iteration
         if 'Error: Installation failed at loop' in line:
             current_state="searchStart"
-            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr),current_sessionid, current_usbfailedtimes,current_failureLine])
+            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr),current_sessionid, current_usbfailedtimes,current_failureLine, file_path])
             #return here since we've found the first error occurence
             return
         return
@@ -154,10 +154,10 @@ def processtheline(line):
             #return here since we've found the first error occurence
             return
         return
-def process_one_file(file):
-    with open(file) as f:
+def process_one_file(file_path):
+    with open(file_path) as f:
             for line in f:
-                processtheline(line)
+                processtheline(line, file_path)
     return  
 def process_directory(dir):
     all_files = []
