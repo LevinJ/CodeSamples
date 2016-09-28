@@ -127,7 +127,8 @@ def processtheline(line):
         #find a false failure, log it and then start next iteration
         if '## total=' in line: 
             current_state="searchStart"
-            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_sessionid,current_usbfailedtimes,current_failureLine])
+            #This issue has been resolved, we will not log this issue
+#             ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_sessionid,current_usbfailedtimes,current_failureLine])
             #return here since we've reached the end of this iteration
             return
         #find a real failure, log it and then start next iteration
