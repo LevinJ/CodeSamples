@@ -160,7 +160,7 @@ def main():
 #         for line in f:  
 #     wb.save("sample.xlsx")
     wb.save(options.input_path+".xlsx")  
-    reboottimestatistic.getFinalResult(options.input_path) 
+#     reboottimestatistic.getFinalResult(options.input_path) 
     return
       
 main()
