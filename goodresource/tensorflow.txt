@@ -1,0 +1,3 @@
+get intermediate computation result
+
+http://stackoverflow.com/questions/38619107/accessing-intermediate-results-from-a-tensorflow-graph

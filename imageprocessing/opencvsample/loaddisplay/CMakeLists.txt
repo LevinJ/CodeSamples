@@ -28,6 +28,8 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Declare the executable target built from your sources
 file(GLOB SOURCES ".//*.cpp")
+message("SOURCES: ${SOURCES}")
+
 add_executable(cvtest SOURCES)
 
 # Link your application with OpenCV libraries

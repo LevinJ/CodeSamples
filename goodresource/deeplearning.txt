@@ -1,3 +1,7 @@
+
+save inte
+http://stackoverflow.com/questions/38619107/accessing-intermediate-results-from-a-tensorflow-graph
+
 Stanford CS class CS231n: Convolutional Neural Networks for Visual Recognition. 
 
 http://cs231n.github.io/convolutional-networks/
