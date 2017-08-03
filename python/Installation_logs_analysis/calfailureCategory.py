@@ -30,6 +30,9 @@ def parse_arguments():
     parser.add_option("-i", "--input", dest="input_path",
                        metavar="FILE", type="string",
                        help="path to the installation result file")
+    parser.add_option("-d", "--directory", dest="input_directory",
+                       metavar="Directory", type="string",
+                       help="directory to the installation result files")
                                                   
     (options, args) = parser.parse_args()
     # print (options, args)
@@ -37,16 +40,19 @@ def parse_arguments():
     if options.input_path:
         if not os.path.exists(options.input_path):
             parser.error("Could not find the input file")
+    elif options.input_directory:
+        if not os.path.exists(options.input_directory):
+            parser.error("Could not find the input directory")
     else:
-        parser.error("'input' option is required to run this program")
-
+        parser.error("'input' or 'diretory' option is required to run this program")
+        
     return options 
 
 current_state="searchStart"
 current_loopStr=""
 wb = Workbook()
 ws = wb.active
-ws.append(["NO", "RealFailure","Category","Loop", "SessionID","USB issue times","Failure details"])
+ws.append(["NO", "RealFailure","Category","Loop", "SessionID","USB issue times","Failure details", "LZMA_log_path"])
 current_numId=0
 current_failureLine=""
 current_errorcategory=""
@@ -95,7 +101,7 @@ def markUSBfailedTimes(line):
     if 'ProductionScripts::Prc::Process::Packages::Verify ' in line:
         current_usbfailedtimes = current_usbfailedtimes + 1
         
-def processtheline(line):
+def processtheline(line, file_path):
     global current_state
     global current_loopStr
     global current_numId
@@ -121,13 +127,14 @@ def processtheline(line):
         #find a false failure, log it and then start next iteration
         if '## total=' in line: 
             current_state="searchStart"
-            ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_sessionid,current_usbfailedtimes,current_failureLine])
+            #This issue has been resolved, we will not log this issue
+#             ws.append([current_numId, "FALSE",getErrorCategory(False,current_failureLine),getLoopNumber(current_loopStr), current_sessionid,current_usbfailedtimes,current_failureLine])
             #return here since we've reached the end of this iteration
             return
         #find a real failure, log it and then start next iteration
         if 'Error: Installation failed at loop' in line:
             current_state="searchStart"
-            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr),current_sessionid, current_usbfailedtimes,current_failureLine])
+            ws.append([current_numId, "TRUE",getErrorCategory(True,current_failureLine),getLoopNumber(current_loopStr),current_sessionid, current_usbfailedtimes,current_failureLine, file_path])
             #return here since we've found the first error occurence
             return
         return
@@ -147,20 +154,42 @@ def processtheline(line):
             #return here since we've found the first error occurence
             return
         return
-    
+def process_one_file(file_path):
+    with open(file_path) as f:
+            for line in f:
+                processtheline(line, file_path)
+    return  
+def process_directory(dir):
+    all_files = []
+    for path, subdirs, files in os.walk(dir):
+        for name in files:
+            if not name.endswith('.log'):
+                continue
+            cur_file = os.path.join(path, name)
+            all_files.append(cur_file)
+    for f in all_files:
+        print("process file {}".format(f))
+        process_one_file(f)
+    return
 def main():
     global wb
     global reboottimestatistic
     options = parse_arguments()   
     print (options)
-    with open(options.input_path) as f:
-            for line in f:
-                processtheline(line)
+    if options.input_path:
+        process_one_file(options.input_path)
+        filename_prefix = options.input_path
+    else:
+        path,folder_name = os.path.split(options.input_directory)
+        filename_prefix = options.input_directory +"//" + folder_name+ "_summary"
+        process_directory(options.input_directory)
+        
+    
 #     with open(options.input_path) as f:
 #         for line in f:  
 #     wb.save("sample.xlsx")
-    wb.save(options.input_path+".xlsx")  
-    reboottimestatistic.getFinalResult(options.input_path) 
+    wb.save(filename_prefix+".xlsx")  
+#     reboottimestatistic.getFinalResult(options.input_path) 
     return
       
 main()
