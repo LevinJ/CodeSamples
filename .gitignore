@@ -34,3 +34,4 @@ mnist/
 data/
 tmp/
 temp/
+python/tensorflow/logs/
