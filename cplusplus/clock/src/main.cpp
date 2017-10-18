@@ -33,6 +33,8 @@ private:
 	std::chrono::time_point<clock_> beg_;
 };
 
+enum BehvStates {KL, LCL, LCR};
+
 int main()
 {
 	ElapsedClock tmr;
@@ -42,6 +44,7 @@ int main()
 	for (int i = 0; i< 24200000; i++)
 		temp+=temp;
 	cout << "timer elapsed, " << tmr.elapsed()<<endl;
+	cout << "BehvStates:"<<BehvStates::KL<<endl;
 	return 0;
 	//	cout << chrono::high_resolution_clock::period::den << endl;
 	//	auto start_time = chrono::high_resolution_clock::now();
