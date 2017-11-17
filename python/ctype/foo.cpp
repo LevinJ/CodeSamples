@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 using namespace std;
 
@@ -24,4 +27,18 @@ extern "C" {
     void Foo_bar_2(Foo* foo, const char *pstr){foo->bar_2(pstr);}
 
     void Foo_bar_3(Foo* foo, int i){foo->bar_3(i);}
+    char *greeting = 0;
+    const char* hello(char* name) {
+    	char hello[] = "Hello ";
+		char excla[] = "!\n";
+		greeting = (char *)new char[ sizeof(char) * ( strlen(name) + strlen(hello) + strlen(excla) + 1 ) ];
+
+		strcpy( greeting , hello);
+		strcat(greeting, name);
+		strcat(greeting, excla);
+		return greeting;
+    }
+    void free_mem(){
+    	delete [] greeting;
+    }
 }
