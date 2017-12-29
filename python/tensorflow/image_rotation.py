@@ -5,7 +5,7 @@ import numpy as np
 import math
 
 
-raw_image = plt.imread('/home/levin/workspace/snrprj/snr/data/process_result/snrimgs/sample_test/region/1_F001Z11479_top_right.bmp')
+raw_image = plt.imread('/home/levin/workspace/snrprj/snr/data/process_result/snrimgs/sample_test/batch_1/DOWN/20171017162233_F004F21727_top_right.jpg')
 shape = raw_image.shape
 raw_image = raw_image.reshape((1, shape[0], shape[1], 1))
 
@@ -19,6 +19,8 @@ intput_image = tf.subtract(intput_image, 0.5)
 intput_image = tf.multiply(intput_image, 2.0)
 
 intput_image = tf.contrib.image.rotate(intput_image, 180 * math.pi / 180)
+
+# intput_image = tf.image.flip_up_down(intput_image[0])
 
 # Evaluate the tensor `c`.
 with tf.Session() as sess:
