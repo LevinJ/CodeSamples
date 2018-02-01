@@ -80,7 +80,7 @@ class Thresholding:
         return
    
     def run(self):
-        img = cv2.imread('/home/levin/workspace/snrprj/snr/data/banknotes/train/20171017163713/bmp/F018F26785.bmp',0)
+        img = cv2.imread('/home/levin/workspace/snrprj/snr/data/banknotes/train/batch_1/20171017163713/F018F26785.jpg',0)
 #         img = cv2.imread('2.jpg',0)
 #         self.simple(img)
         self.adaptive(img)

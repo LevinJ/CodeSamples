@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from tensorflow.python.ops import math_ops
+import numpy as np
 
 
 def character_accuracy(predictions, labels):
@@ -27,8 +28,11 @@ def pad_pred_label(predictions, labels):
     labels = tf.cond(num_digit_labels< num_digit_predictions, lambda: tf.pad(labels, paddings, constant_values=-1), lambda: tf.identity(labels))
     return predictions, labels
 
-predictions = tf.constant([[1, 2], [4, 5]]) 
-labels =  tf.constant([[1, 2, 3, 8], [4, 5, 6, 9]])
+np_predictions = np.arange(32*10).reshape(32,10)
+np_labels = np.arange(32*10).reshape(32,10)
+np_predictions[0][0] = -1
+predictions = tf.constant(np_predictions) 
+labels =  tf.constant(np_labels)
 
 
 
