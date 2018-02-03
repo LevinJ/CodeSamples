@@ -39,6 +39,7 @@ m = 10
 np_predictions = np.arange(b*m).reshape([b,m])
 np_labels = np.arange(b*m).reshape([b,m])
 
+
 predictions = tf.constant(np_predictions) 
 labels =  tf.constant(np_labels)
 
