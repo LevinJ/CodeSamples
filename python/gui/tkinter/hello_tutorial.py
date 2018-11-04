@@ -1,26 +1,14 @@
-import tkinter as tk
+from tkinter import *
+master = Tk()
 
-counter = 0 
-stop_count = False
-def counter_label(label, root):
-	def count():
-		global counter
-		if stop_count:
-				return
-		counter += 1
-		label.config(text=str(counter))
-		root.after(1000, count)
-	count()
+def var_states():
+   print("male: %d,\nfemale: %d" % (var1.get(), var2.get()))
 
-def stop_count_fun():
-	global stop_count
-	stop_count = True
-	return 
-root = tk.Tk()
-root.title("Counting Seconds")
-label = tk.Label(root, fg="green")
-label.pack()
-counter_label(label, root)
-button = tk.Button(root, text='Stop', width=25, command=stop_count_fun)
-button.pack()
-root.mainloop()
+Label(master, text="Your sex:").grid(row=0, sticky=W)
+var1 = IntVar()
+Checkbutton(master, text="male", variable=var1).grid(row=1, sticky=W)
+var2 = IntVar()
+Checkbutton(master, text="female", variable=var2).grid(row=2, sticky=W)
+Button(master, text='Quit', command=master.quit).grid(row=3, sticky=W, pady=4)
+Button(master, text='Show', command=var_states).grid(row=4, sticky=W, pady=4)
+mainloop()
