@@ -15,4 +15,6 @@
 
 std::string repre_mat(cv::Mat mat);
 
+std::string repre_euler(cv::Mat mat);
+
 #endif /* UTILITYFUNC_H_ */

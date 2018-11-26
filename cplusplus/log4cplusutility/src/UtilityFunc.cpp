@@ -6,9 +6,14 @@
  */
 
 #include "UtilityFunc.h"
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <opencv2/core/eigen.hpp>
+#include <cmath>
 
 using namespace std;
 using namespace cv;
+using namespace Eigen;
 
 string repre_mat(Mat mat){
 	const int type = mat.type();
@@ -35,4 +40,25 @@ string repre_mat(Mat mat){
 	res<<"]";
 
 	return res.str();
+}
+
+std::string repre_euler(cv::Mat mat){
+	Eigen::Matrix<float,3,3> eigenT;
+	cv2eigen(mat,eigenT);
+
+	stringstream ss;
+	ss<<"[";
+	Eigen::Vector3f euler_angles =eigenT.eulerAngles ( 2,1,0 );
+	for (size_t i = 0, nRows = euler_angles.rows(), nCols = euler_angles.cols(); i < nRows; ++i){
+		for (size_t j = 0;  j < nCols; ++j){
+			euler_angles(i,j) = euler_angles(i,j) * 180.0/M_PI;
+			ss<<euler_angles(i,j);
+		}
+		if(i != nRows-1){
+			ss<<",";
+		}
+	}
+
+	ss<<"]";
+	return ss.str();
 }
