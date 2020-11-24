@@ -1,66 +1,59 @@
+#include <iostream>
+#include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
- #include <pcl/io/pcd_io.h>
- #include <pcl/kdtree/kdtree_flann.h>
 
- typedef pcl::PointXYZI PointT;
+#define PCL_NO_PRECOMPILE
+//#include <pcl/memory.h>
+#include <pcl/pcl_macros.h>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/io/pcd_io.h>
 
- float
- G (float x, float sigma)
- {
-   return std::exp (- (x*x)/(2*sigma*sigma));
- }
+struct VSlamPoint
+{
+  PCL_ADD_POINT4D;                  // preferred way of adding a XYZ+padding
+  uint32_t id;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW     // make sure our new allocators are aligned
+};                    // enforce SSE padding for correct memory alignment
 
- int
- main (int argc, char *argv[])
- {
-   std::string incloudfile = argv[1];
-   std::string outcloudfile = argv[2];
-   float sigma_s = atof (argv[3]);
-   float sigma_r = atof (argv[4]);
+POINT_CLOUD_REGISTER_POINT_STRUCT (VSlamPoint,           // here we assume a XYZ + "test" (as fields)
+                                   (float, x, x)
+                                   (float, y, y)
+                                   (float, z, z)
+                                   (uint32_t, id, id)
+)
 
-   // Load cloud
-   pcl::PointCloud<PointT>::Ptr cloud (new pcl::PointCloud<PointT>);
-   pcl::io::loadPCDFile (incloudfile.c_str (), *cloud);
-   int pnumber = (int)cloud->size ();
 
-   // Output Cloud = Input Cloud
-   pcl::PointCloud<PointT> outcloud = *cloud;
 
-   // Set up KDTree
-   pcl::KdTreeFLANN<PointT>::Ptr tree (new pcl::KdTreeFLANN<PointT>);
-   tree->setInputCloud (cloud);
+int
+  main (int argc, char** argv)
+{
+  pcl::PointCloud<VSlamPoint> cloud;
 
-   // Neighbors containers
-   std::vector<int> k_indices;
-   std::vector<float> k_distances;
+  // Fill in the cloud data
+  cloud.width    = 5;
+  cloud.height   = 1;
+  cloud.is_dense = false;
+  cloud.points.resize (cloud.width * cloud.height);
 
-   // Main Loop
-   for (int point_id = 0; point_id < pnumber; ++point_id)
-   {
-     float BF = 0;
-     float W = 0;
+  for (std::size_t i = 0; i < cloud.points.size (); ++i)
+  {
+    cloud.points[i].x = 1024 * rand () / (RAND_MAX + 1.0f);
+    cloud.points[i].y = 1024 * rand () / (RAND_MAX + 1.0f);
+    cloud.points[i].z = 1024 * rand () / (RAND_MAX + 1.0f);
+    cloud.points[i].id = i;
+  }
 
-     tree->radiusSearch (point_id, 2 * sigma_s, k_indices, k_distances);
+  pcl::PointXYZL p;
+//  p.x = 1;
+//  p.y = 2;
+//  p.z = 3;
+//  cloud.push_back(p);
+  pcl::io::savePCDFileASCII ("test_pcd.pcd", cloud);
+  std::cerr << "Saved " << cloud.points.size () << " data points to test_pcd.pcd." << std::endl;
 
-     // For each neighbor
-     for (std::size_t n_id = 0; n_id < k_indices.size (); ++n_id)
-     {
-       float id = k_indices.at (n_id);
-       float dist = sqrt (k_distances.at (n_id));
-       float intensity_dist = std::abs (cloud->points[point_id].intensity - cloud->points[id].intensity);
+  for (std::size_t i = 0; i < cloud.points.size (); ++i)
+    std::cerr << "    " << cloud.points[i].x << " " << cloud.points[i].y << " " << cloud.points[i].z<< ", "<< cloud.points[i].id << std::endl;
 
-       float w_a = G (dist, sigma_s);
-       float w_b = G (intensity_dist, sigma_r);
-       float weight = w_a * w_b;
-
-       BF += weight * cloud->points[id].intensity;
-       W += weight;
-     }
-
-     outcloud.points[point_id].intensity = BF / W;
-   }
-
-   // Save filtered output
-   pcl::io::savePCDFile (outcloudfile.c_str (), outcloud);
-   return (0);
- }
+  return (0);
+}

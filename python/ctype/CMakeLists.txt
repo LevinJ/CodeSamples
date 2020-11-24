@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(foo)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 
 #However, the file(GLOB...) allows for wildcard additions:

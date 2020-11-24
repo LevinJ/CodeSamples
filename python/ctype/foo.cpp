@@ -10,6 +10,7 @@ class Foo{
     public:
         void bar(){
             std::cout << "Hello world" << std::endl;
+            std::cout << "Hello again" << std::endl;
         }
         void bar_2(const char *pstr){
         	std::cout << string(pstr) << std::endl;
