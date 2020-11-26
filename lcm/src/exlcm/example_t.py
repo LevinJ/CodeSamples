@@ -9,14 +9,20 @@ except ImportError:
     from io import BytesIO
 import struct
 
+import exlcm.HEADER
+
+import exlcm.Image
+
 class example_t(object):
-    __slots__ = ["timestamp", "position", "orientation", "num_ranges", "ranges", "name", "enabled"]
+    __slots__ = ["header", "img", "timestamp", "position", "orientation", "num_ranges", "ranges", "name", "enabled"]
 
-    __typenames__ = ["int64_t", "double", "double", "int32_t", "int16_t", "string", "boolean"]
+    __typenames__ = ["exlcm.HEADER", "exlcm.Image", "int64_t", "double", "double", "int32_t", "int16_t", "string", "boolean"]
 
-    __dimensions__ = [None, [3], [4], None, ["num_ranges"], None, None]
+    __dimensions__ = [None, None, None, [3], [4], None, ["num_ranges"], None, None]
 
     def __init__(self):
+        self.header = exlcm.HEADER()
+        self.img = exlcm.Image()
         self.timestamp = 0
         self.position = [ 0.0 for dim0 in range(3) ]
         self.orientation = [ 0.0 for dim0 in range(4) ]
@@ -32,6 +38,10 @@ class example_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
+        assert self.header._get_packed_fingerprint() == exlcm.HEADER._get_packed_fingerprint()
+        self.header._encode_one(buf)
+        assert self.img._get_packed_fingerprint() == exlcm.Image._get_packed_fingerprint()
+        self.img._encode_one(buf)
         buf.write(struct.pack(">q", self.timestamp))
         buf.write(struct.pack('>3d', *self.position[:3]))
         buf.write(struct.pack('>4d', *self.orientation[:4]))
@@ -55,6 +65,8 @@ class example_t(object):
 
     def _decode_one(buf):
         self = example_t()
+        self.header = exlcm.HEADER._decode_one(buf)
+        self.img = exlcm.Image._decode_one(buf)
         self.timestamp = struct.unpack(">q", buf.read(8))[0]
         self.position = struct.unpack('>3d', buf.read(24))
         self.orientation = struct.unpack('>4d', buf.read(32))
@@ -68,7 +80,8 @@ class example_t(object):
 
     def _get_hash_recursive(parents):
         if example_t in parents: return 0
-        tmphash = (0x1baa9e29b0fbaa8b) & 0xffffffffffffffff
+        newparents = parents + [example_t]
+        tmphash = (0x73e4cefebdb365f6+ exlcm.HEADER._get_hash_recursive(newparents)+ exlcm.Image._get_hash_recursive(newparents)) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

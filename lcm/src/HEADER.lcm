@@ -1,0 +1,14 @@
+package exlcm;
+struct HEADER
+{
+    int64_t    nTimeStamp;
+    byte    nFrameID;
+    int16_t    nCounter;
+}
+
+
+
+
+        
+
+        

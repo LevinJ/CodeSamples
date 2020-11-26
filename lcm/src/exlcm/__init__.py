@@ -4,3 +4,6 @@ DO NOT MODIFY BY HAND!!!!
 """
 
 from .example_t import example_t
+from .HEADER import HEADER
+from .Image import Image
+from .point2d_list_t import point2d_list_t

@@ -1,0 +1,6 @@
+package exlcm;
+struct point2d_list_t
+{
+    int32_t npoints;
+    double  points[npoints][2];
+}

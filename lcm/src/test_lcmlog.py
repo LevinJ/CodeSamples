@@ -2,6 +2,8 @@ import time
 
 import lcm
 from exlcm import example_t
+import numpy as np
+from exlcm import point2d_list_t
 
 
 class TestLcmLog(object):
@@ -20,6 +22,8 @@ class TestLcmLog(object):
         msg = example_t.decode(data)
         print("Received message on channel \"%s\"" % channel)
         print("   timestamp   = %s" % str(msg.timestamp))
+        print("   header timestamp   = %s" % str(msg.header.nTimeStamp))
+        print("   image data   = %s" % str(msg.img.gbImageData))
         print("   position    = %s" % str(msg.position))
         print("   orientation = %s" % str(msg.orientation))
         print("   ranges: %s" % str(msg.ranges))
@@ -30,6 +34,7 @@ class TestLcmLog(object):
     
     def send(self):
         msg = example_t()
+        
         msg.timestamp = 0
         msg.position = (1, 2, 3)
         msg.orientation = (1, 0, 0, 0)
@@ -37,11 +42,20 @@ class TestLcmLog(object):
         msg.num_ranges = len(msg.ranges)
         msg.name = "example string"
         msg.enabled = True
+        msg.img.nWidth = 3
+        msg.img.nHeight = 2
+        msg.img.gbImageData = np.arange(6).reshape(2,3).tolist()
         
+        msg2 = point2d_list_t()
+#         msg2.npoints = 3
+#         msg2.points = [1,2,3,4,5,6]
+#         
         
-        for ind in range(10):
+        for ind in range(5):
             msg.timestamp = ind
+            msg.header.nTimeStamp = ind
             self.lc.publish("EXAMPLE", msg.encode())
+#             self.lc.publish("EXAMPLE2", msg2.encode())
             time.sleep(0.5)
             print("message written")
         return
