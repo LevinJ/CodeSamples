@@ -1,0 +1,20 @@
+package exlcm;
+struct Imu
+{
+     HEADER   header;
+     float    wx;
+     float    wy;
+     float    wz;
+     float    ax;
+     float    ay;
+     float    az;
+     float    variance[6];
+     float temperature;
+}
+
+
+
+
+        
+
+        

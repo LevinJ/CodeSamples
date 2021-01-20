@@ -12,7 +12,7 @@ import struct
 class HEADER(object):
     __slots__ = ["nTimeStamp", "nFrameID", "nCounter"]
 
-    __typenames__ = ["int64_t", "byte", "int16_t"]
+    __typenames__ = ["int64_t", "byte", "int32_t"]
 
     __dimensions__ = [None, None, None]
 
@@ -28,7 +28,7 @@ class HEADER(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">qBh", self.nTimeStamp, self.nFrameID, self.nCounter))
+        buf.write(struct.pack(">qBi", self.nTimeStamp, self.nFrameID, self.nCounter))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -42,13 +42,13 @@ class HEADER(object):
 
     def _decode_one(buf):
         self = HEADER()
-        self.nTimeStamp, self.nFrameID, self.nCounter = struct.unpack(">qBh", buf.read(11))
+        self.nTimeStamp, self.nFrameID, self.nCounter = struct.unpack(">qBi", buf.read(13))
         return self
     _decode_one = staticmethod(_decode_one)
 
     def _get_hash_recursive(parents):
         if HEADER in parents: return 0
-        tmphash = (0x946e13e636aae58f) & 0xffffffffffffffff
+        tmphash = (0x946e13e832aae58f) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

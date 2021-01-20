@@ -1,0 +1,15 @@
+package exlcm;
+struct Image
+{
+     HEADER     header;
+     int32_t    nWidth;
+     int32_t    nHeight;
+     byte    gbImageData[nHeight][nWidth];
+}
+
+
+
+
+        
+
+        

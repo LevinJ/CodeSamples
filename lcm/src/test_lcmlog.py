@@ -4,6 +4,7 @@ import lcm
 from exlcm import example_t
 import numpy as np
 from exlcm import point2d_list_t
+import traceback
 
 
 class TestLcmLog(object):
@@ -20,6 +21,10 @@ class TestLcmLog(object):
         return
     def my_handler(self, channel, data):
         msg = example_t.decode(data)
+        
+        img = msg.img.gbImageData
+        img = [list(bytearray(item)) for item in img]
+        print(img)
         print("Received message on channel \"%s\"" % channel)
         print("   timestamp   = %s" % str(msg.timestamp))
         print("   header timestamp   = %s" % str(msg.header.nTimeStamp))
@@ -51,7 +56,7 @@ class TestLcmLog(object):
 #         msg2.points = [1,2,3,4,5,6]
 #         
         
-        for ind in range(5):
+        for ind in range(1):
             msg.timestamp = ind
             msg.header.nTimeStamp = ind
             self.lc.publish("EXAMPLE", msg.encode())
@@ -64,7 +69,8 @@ class TestLcmLog(object):
         try:
             while True:
                 self.lc.handle()
-        except KeyboardInterrupt:
+        except Exception as e:
+            print("{}, {}".format(e, traceback.format_exc()))
             pass
         
         
