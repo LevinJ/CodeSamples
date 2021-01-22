@@ -11,44 +11,44 @@ using ceres::Solver;
 // derivatives.
 struct F1 {
   template <typename T>
-  bool operator()(const T* const x, T* residual) const {
-    residual[0] = x[0] + 10.0 * x[1];
-    residual[1] = static_cast<T>(0);
-    residual[2] = static_cast<T>(0);
-    residual[3] = static_cast<T>(0);
+  bool operator()(const T* const x1, const T* const x2, T* residual) const {
+    residual[0] = x1[0] + 10.0 * x2[0];
+//    residual[1] = static_cast<T>(0);
+//    residual[2] = static_cast<T>(0);
+//    residual[3] = static_cast<T>(0);
     return true;
   }
 };
 
 struct F2 {
   template <typename T>
-  bool operator()(const T* const x, T* residual) const {
-    residual[1] = sqrt(5) * (x[2] - x[3]);
-    residual[0] = static_cast<T>(0);
-	residual[2] = static_cast<T>(0);
-	residual[3] = static_cast<T>(0);
+  bool operator()(const T* const x3, const T* const x4, T* residual) const {
+    residual[0] = sqrt(5) * (x3[0] - x4[0]);
+//    residual[0] = static_cast<T>(0);
+//	residual[2] = static_cast<T>(0);
+//	residual[3] = static_cast<T>(0);
     return true;
   }
 };
 
 struct F3 {
   template <typename T>
-  bool operator()(const T* const x, T* residual) const {
-    residual[2] = (x[1] - 2.0 * x[2]) * (x[1] - 2.0 * x[2]);
-    residual[1] = static_cast<T>(0);
-	residual[0] =static_cast<T>(0);
-	residual[3] = static_cast<T>(0);
+  bool operator()(const T* const x2, const T* const x3,T* residual) const {
+    residual[0] = (x2[0] - 2.0 * x3[0]) * (x2[0] - 2.0 * x3[0]);
+//    residual[1] = static_cast<T>(0);
+//	residual[0] =static_cast<T>(0);
+//	residual[3] = static_cast<T>(0);
     return true;
   }
 };
 
 struct F4 {
   template <typename T>
-  bool operator()(const T* const x, T* residual) const {
-    residual[3] = sqrt(10) * (x[0] -x[3]) *  (x[0] -x[3]);
-    residual[1] = static_cast<T>(0);
-	residual[2] = static_cast<T>(0);
-	residual[0] = static_cast<T>(0);
+  bool operator()(const T* const x1, const T* const x4, T* residual) const {
+    residual[0] = sqrt(10) * (x1[0] -x4[0]) *  (x1[0] -x4[0]);
+//    residual[1] = static_cast<T>(0);
+//	residual[2] = static_cast<T>(0);
+//	residual[0] = static_cast<T>(0);
     return true;
   }
 };
@@ -65,18 +65,18 @@ int main(int argc, char** argv) {
   Problem problem;
   // Set up the only cost function (also known as residual). This uses
   // auto-differentiation to obtain the derivative (jacobian).
-  CostFunction* cost_function = new AutoDiffCostFunction<F1, 4, 4>(new F1);
-  problem.AddResidualBlock(cost_function, nullptr, x);
+  CostFunction* cost_function = new AutoDiffCostFunction<F1, 1, 1, 1>(new F1);
+  problem.AddResidualBlock(cost_function, nullptr, &x1, &x2);
 
-  cost_function = new AutoDiffCostFunction<F2, 4, 4>(new F2);
-   problem.AddResidualBlock(cost_function, nullptr, x);
+  cost_function = new AutoDiffCostFunction<F2, 1, 1, 1>(new F2);
+   problem.AddResidualBlock(cost_function, nullptr, &x3, &x4);
 
-   cost_function = new AutoDiffCostFunction<F3, 4, 4>(new F3);
-   problem.AddResidualBlock(cost_function, nullptr, x);
+   cost_function = new AutoDiffCostFunction<F3, 1, 1, 1>(new F3);
+   problem.AddResidualBlock(cost_function, nullptr, &x2, &x3);
 
 
-   cost_function = new AutoDiffCostFunction<F4, 4, 4>(new F4);
-   problem.AddResidualBlock(cost_function, nullptr, x);
+   cost_function = new AutoDiffCostFunction<F4, 1, 1, 1>(new F4);
+   problem.AddResidualBlock(cost_function, nullptr, &x1, &x4);
 
    std::cout << "Initial x1 = " << x1
                  << ", x2 = " << x2
