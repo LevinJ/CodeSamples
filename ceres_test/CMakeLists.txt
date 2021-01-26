@@ -16,3 +16,6 @@ include_directories(
 include_directories(./src)
 add_executable(test_ceres  src/main.cpp)
 target_link_libraries(test_ceres  ceres) 
+
+add_executable(curve_fitting  src/curve_fitting.cpp)
+target_link_libraries(curve_fitting  ceres) 

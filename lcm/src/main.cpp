@@ -1,10 +1,9 @@
-#include <stdio.h>
 #include <iostream>
 #include <lcm/lcm-cpp.hpp>
 #include "exlcm/HEADER.hpp"
 #include "exlcm/Image.hpp"
 #include "exlcm/Imu.hpp"
-//#include "exlcm/example_t.hpp"
+
 using namespace std;
 class Handler
 {
@@ -14,27 +13,13 @@ class Handler
                 const std::string& chan,
                 const exlcm::Imu* msg)
         {
-            int i;
-            printf("Received message on channel \"%s\":\n", chan.c_str());
-//            printf("  timestamp   = %lld\n", (long long)msg->timestamp);
-//            cout<<"msg->img.nWidth="<<msg->img.nWidth<<endl;
-//            printf("  position    = (%f, %f, %f)\n",
-//                    msg->position[0], msg->position[1], msg->position[2]);
-//            printf("  orientation = (%f, %f, %f, %f)\n",
-//                    msg->orientation[0], msg->orientation[1],
-//                    msg->orientation[2], msg->orientation[3]);
-//            printf("  ranges:");
-//            for(i = 0; i < msg->num_ranges; i++)
-//                printf(" %d", msg->ranges[i]);
-//            printf("\n");
-//            printf("  name        = '%s'\n", msg->name.c_str());
-//            printf("  enabled     = %d\n", msg->enabled);
+        	auto &imu_data = *msg;
+        	cout<<"time="<<imu_data.header.nTimeStamp<<", count ="<<imu_data.header.nCounter<<endl;
         }
 };
 int main(int argc, char** argv)
 {
-//    lcm::LCM lcm("file:///home/levin/workspace/codesamples/lcm/src/data/logfile?mode=r&speed=15");
-    lcm::LCM lcm("file:///home/levin/workspace/data/euroc/MH_01_easy.log?mode=r&speed=1");
+    lcm::LCM lcm;
     if(!lcm.good())
         return 1;
     Handler handlerObject;

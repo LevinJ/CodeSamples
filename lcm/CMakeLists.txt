@@ -5,3 +5,6 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(./src)
 add_executable(main  src/main.cpp)
 target_link_libraries(main  lcm) 
+
+add_executable(sendlcm  src/sendlcm.cpp)
+target_link_libraries(sendlcm  lcm)
