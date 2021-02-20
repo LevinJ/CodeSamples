@@ -11,7 +11,7 @@
 using namespace std;
 int main(int argc, char ** argv)
 {
-    lcm::LCM lcm;
+    lcm::LCM lcm("udpm://239.255.76.67:7667?ttl=1");
     if(!lcm.good())
         return 1;
     static int imu_cnt = 0;

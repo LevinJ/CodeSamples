@@ -125,6 +125,20 @@ const double data[] = {
   4.950000e+00, 4.669206e+00,
 };
 
+//struct ExponentialResidual {
+//	double x_;
+//	double y_;
+//	ExponentialResidual(double x, double y){
+//		x_ = x;
+//		y_ = y;
+//	}
+//  template <typename T>
+//  bool operator()(const T* const m, const T* const c, T* residual) const {
+//    residual[0] = exp(m[0] * x_ + c[0]) - y_;
+//    return true;
+//  }
+//};
+
 struct ExponentialResidual {
 	double x_;
 	double y_;
@@ -133,8 +147,8 @@ struct ExponentialResidual {
 		y_ = y;
 	}
   template <typename T>
-  bool operator()(const T* const m, const T* const c, T* residual) const {
-    residual[0] = exp(m[0] * x_ + c[0]) - y_;
+  bool operator()(const T* const mc, T* residual) const {
+    residual[0] = exp(mc[0] * x_ + mc[1]) - y_;
     return true;
   }
 };
@@ -146,17 +160,17 @@ DEFINE_string(minimizer,
 int main(int argc, char** argv) {
   GFLAGS_NAMESPACE::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
-  double m = 0;
-  double c = 0;
+//  double m = 0;
+//  double c = 0;
+  double mc[2] = {0, 0};
 
   Problem problem;
   for (int i = 0; i < kNumObservations; ++i) {
 	  problem.AddResidualBlock(
-			  new AutoDiffCostFunction<ExponentialResidual, 1, 1, 1>(
+			  new AutoDiffCostFunction<ExponentialResidual, 1, 2>(
 					  new ExponentialResidual(data[2 * i], data[2 * i + 1])),
-					  NULL,
-					  &m,
-					  &c);
+					  new ceres::CauchyLoss(0.5),
+					  mc);
   }
 
 
@@ -174,10 +188,8 @@ int main(int argc, char** argv) {
   options.linear_solver_type = ceres::DENSE_QR;
   options.minimizer_progress_to_stdout = true;
   // clang-format off
-  std::cout << "Initial x1 = " << x1
-            << ", x2 = " << x2
-            << ", x3 = " << x3
-            << ", x4 = " << x4
+  std::cout << "Initial m = " << mc[0]
+            << ", c = " << mc[1]
             << "\n";
   // clang-format on
   // Run the solver!
@@ -185,11 +197,9 @@ int main(int argc, char** argv) {
   Solve(options, &problem, &summary);
   std::cout << summary.FullReport() << "\n";
   // clang-format off
-  std::cout << "Final x1 = " << x1
-            << ", x2 = " << x2
-            << ", x3 = " << x3
-            << ", x4 = " << x4
-            << "\n";
+  std::cout << "Final m = " << mc[0]
+              << ", c = " << mc[1]
+              << "\n";
   // clang-format on
   return 0;
 }
