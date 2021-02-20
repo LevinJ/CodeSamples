@@ -10,3 +10,6 @@ add_executable(pcd_write_test src/pcd_write.cpp)
 target_link_libraries(pcd_write_test ${PCL_LIBRARIES})
 
 message(STATUS "PCL_VERSION = ${PCL_VERSION}")
+
+add_executable(voxel_grid_filter src/voxel_grid_filter.cpp)
+target_link_libraries(voxel_grid_filter ${PCL_LIBRARIES})
