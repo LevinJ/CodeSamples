@@ -13,3 +13,6 @@ message(STATUS "PCL_VERSION = ${PCL_VERSION}")
 
 add_executable(voxel_grid_filter src/voxel_grid_filter.cpp)
 target_link_libraries(voxel_grid_filter ${PCL_LIBRARIES})
+
+add_executable(statistical_removal src/statistical_removal.cpp)
+target_link_libraries(statistical_removal ${PCL_LIBRARIES})
