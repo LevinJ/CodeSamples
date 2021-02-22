@@ -16,3 +16,6 @@ target_link_libraries(voxel_grid_filter ${PCL_LIBRARIES})
 
 add_executable(statistical_removal src/statistical_removal.cpp)
 target_link_libraries(statistical_removal ${PCL_LIBRARIES})
+
+add_executable(icp_test src/icp_test.cpp)
+target_link_libraries(icp_test ${PCL_LIBRARIES})
