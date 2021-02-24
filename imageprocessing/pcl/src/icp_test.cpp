@@ -6,7 +6,7 @@ using namespace Eigen;
 
 Eigen::Matrix4f gettrans(){
 	//Roll pitch and yaw in Radians
-	float roll = 1.5707, pitch = 0, yaw = 0.707;
+	float roll = 0.0, pitch = 0, yaw = 0.2;
 	Quaternionf q;
 	q = AngleAxisf(roll, Vector3f::UnitX())
 	    * AngleAxisf(pitch, Vector3f::UnitY())
@@ -18,6 +18,9 @@ Eigen::Matrix4f gettrans(){
 	Matrix4f res = Matrix4f::Identity();
 
 	res.block<3,3>(0,0) = r;
+	res(0,3) = 0.2;
+	res(1,3) = 0.1;
+	res(2,3) = 0.3;
 
 	return res;
 }

@@ -19,3 +19,9 @@ target_link_libraries(statistical_removal ${PCL_LIBRARIES})
 
 add_executable(icp_test src/icp_test.cpp)
 target_link_libraries(icp_test ${PCL_LIBRARIES})
+
+#add_executable(incr_registration src/incr_registration.cpp)
+#target_link_libraries(incr_registration ${PCL_LIBRARIES})
+
+add_executable(interactive_icp src/interactive_icp.cpp)
+target_link_libraries(interactive_icp ${PCL_LIBRARIES})
