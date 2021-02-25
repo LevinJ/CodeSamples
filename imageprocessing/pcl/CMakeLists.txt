@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_BUILD_TYPE DEBUG)
 project(MY_GRAND_PROJECT)
 find_package(PCL 1.3 REQUIRED)
@@ -25,3 +29,6 @@ target_link_libraries(icp_test ${PCL_LIBRARIES})
 
 add_executable(interactive_icp src/interactive_icp.cpp)
 target_link_libraries(interactive_icp ${PCL_LIBRARIES})
+
+add_executable(normal_distributions_transform src/normal_distributions_transform.cpp)
+target_link_libraries(normal_distributions_transform ${PCL_LIBRARIES})
