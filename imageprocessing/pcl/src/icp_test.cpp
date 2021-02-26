@@ -6,7 +6,7 @@ using namespace Eigen;
 
 Eigen::Matrix4f gettrans(){
 	//Roll pitch and yaw in Radians
-	float roll = 0.0, pitch = 0, yaw = 0.2;
+	float roll = -0.8, pitch = 0, yaw = 0.92;
 	Quaternionf q;
 	q = AngleAxisf(roll, Vector3f::UnitX())
 	    * AngleAxisf(pitch, Vector3f::UnitY())
@@ -19,8 +19,8 @@ Eigen::Matrix4f gettrans(){
 
 	res.block<3,3>(0,0) = r;
 	res(0,3) = 0.2;
-	res(1,3) = 0.1;
-	res(2,3) = 0.3;
+	res(1,3) = 2;
+	res(2,3) = 0;
 
 	return res;
 }
@@ -71,12 +71,20 @@ int
   icp.setInputSource(cloud_in);
   icp.setInputTarget(cloud_out);
 
+  icp.setMaximumIterations (100);
+  std::cout<<"icp current max iteration numbrer = "<<icp.getMaximumIterations ()<<std::endl;
+
   pcl::PointCloud<pcl::PointXYZ> Final;
-  icp.align(Final);
+// icp.align(Final);
+ icp.align(Final, trans);
 
   std::cout << "has converged:" << icp.hasConverged() << " score: " <<
   icp.getFitnessScore() << std::endl;
   std::cout << icp.getFinalTransformation() << std::endl;
+
+  Eigen::Matrix4f res= icp.getFinalTransformation();
+  Eigen::Matrix3f res_r = res.block<3,3>(0,0);
+  std::cout<<"final rpy = "<<res_r.eulerAngles(0, 1, 2);
 
  return (0);
 }
