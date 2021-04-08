@@ -122,7 +122,11 @@ class Example(tk.Frame):
         print ("canvas xy={}".format([x,y]))
     def zoomerM(self,event):
         print ("zoomerM uv={}".format([event.x,event.y]))
+        canvas = event.widget
+        x = canvas.canvasx(event.x)
+        y = canvas.canvasy(event.y)
         self.canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.scale_histroy.append(("all", x, y, 1/0.9, 1/0.9))
         self.canvas.configure(scrollregion = self.canvas.bbox("all"))
 
 if __name__ == "__main__":
