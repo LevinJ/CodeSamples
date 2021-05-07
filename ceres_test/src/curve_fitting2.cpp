@@ -61,6 +61,24 @@ struct CostFunctor {
    }
 };
 
+class QuadraticCostFunction : public ceres::SizedCostFunction<1, 2> {
+ public:
+  virtual ~QuadraticCostFunction() {}
+  virtual bool Evaluate(double const* const* parameters,
+                        double* residuals,
+                        double** jacobians) const {
+    const double x = parameters[0][0];
+    const double y = parameters[0][1];
+    residuals[0] = (10 - x)*y;
+
+    // Compute the Jacobian if asked for.
+    if (jacobians != nullptr && jacobians[0] != nullptr) {
+      jacobians[0][0] = -y;
+      jacobians[0][1] = 10 - x;
+    }
+    return true;
+  }
+};
 
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
@@ -77,8 +95,14 @@ int main(int argc, char** argv) {
 
   // Set up the only cost function (also known as residual). This uses
   // auto-differentiation to obtain the derivative (jacobian).
+//  CostFunction* cost_function =
+//      new AutoDiffCostFunction<CostFunctor, 1, 2>(new CostFunctor);
+
+
+//  problem.AddResidualBlock(cost_function, nullptr, x);
+
   CostFunction* cost_function =
-      new AutoDiffCostFunction<CostFunctor, 1, 2>(new CostFunctor);
+      new QuadraticCostFunction();
   problem.AddResidualBlock(cost_function, nullptr, x);
 
   // Run the solver!
