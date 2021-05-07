@@ -56,7 +56,7 @@ using ceres::Solver;
 struct CostFunctor {
    template <typename T>
    bool operator()(const T* const x, T* residual) const {
-     residual[0] = 10.0 - x[0];
+     residual[0] = (10.0 - x[0]) * x[1];
      return true;
    }
 };
@@ -66,8 +66,11 @@ int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
 
   // The variable to solve for with its initial value.
-  double initial_x = 111154322.0;
-  double x = initial_x;
+  double initial_x = 5.0;
+  double initial_y = 6.0;
+  double x[2];
+  x[0] = initial_x;
+  x[1] = initial_y;
 
   // Build the problem.
   Problem problem;
@@ -75,8 +78,8 @@ int main(int argc, char** argv) {
   // Set up the only cost function (also known as residual). This uses
   // auto-differentiation to obtain the derivative (jacobian).
   CostFunction* cost_function =
-      new AutoDiffCostFunction<CostFunctor, 1, 1>(new CostFunctor);
-  problem.AddResidualBlock(cost_function, nullptr, &x);
+      new AutoDiffCostFunction<CostFunctor, 1, 2>(new CostFunctor);
+  problem.AddResidualBlock(cost_function, nullptr, x);
 
   // Run the solver!
   Solver::Options options;
@@ -87,7 +90,7 @@ int main(int argc, char** argv) {
 
   std::cout << summary.BriefReport() << "\n";
   std::cout << "x : " << initial_x
-            << " -> " << x << "\n";
+            << " -> " << x[0]<< " -> " << x[1]  << "\n";
   return 0;
 }
 
