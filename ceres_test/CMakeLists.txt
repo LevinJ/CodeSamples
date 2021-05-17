@@ -22,3 +22,6 @@ target_link_libraries(curve_fitting  ceres)
 
 add_executable(curve_fitting2  src/curve_fitting2.cpp)
 target_link_libraries(curve_fitting2  ceres) 
+
+add_executable(powel_test  src/powel_test.cpp)
+target_link_libraries(powel_test  ceres) 
