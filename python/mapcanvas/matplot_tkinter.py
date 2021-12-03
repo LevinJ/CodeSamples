@@ -1,8 +1,8 @@
 import tkinter
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.backend_bases import key_press_handler
-from matplotlib.figure import Figure
+from matplotlib.backend_base
+
 
 root = tkinter.Tk() # Create the main window of tkinter
 root.title("Use matplotlib in tkinter")
