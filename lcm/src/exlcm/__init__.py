@@ -6,3 +6,5 @@ DO NOT MODIFY BY HAND!!!!
 from .HEADER import HEADER
 from .Image import Image
 from .Imu import Imu
+from .point2d_list_t import point2d_list_t
+from .example_t import example_t

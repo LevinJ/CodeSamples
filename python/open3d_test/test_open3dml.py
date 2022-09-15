@@ -6,6 +6,8 @@ from vis import Visualizer
 # construct a dataset by specifying dataset_path
 dataset = ml3d.datasets.NuScenes(dataset_path='/home/levin/workspace/data/temp/nuscenes/v1.0-mini')
 
+# dataset = ml3d.datasets.SemanticKITTI(dataset_path='/home/levin/workspace/data/temp/semantic_kiti/SemanticKitti')
+
 # get the 'all' split that combines training, validation and test set
 all_split = dataset.get_split('train')
 

@@ -11,7 +11,7 @@ class TestLcmLog(object):
     def __init__(self):
         self.mode = "r"
 
-        self.lc = lcm.LCM("file:///home/levin/workspace/codesamples/lcm/src/data/logfile?mode={}&speed=15".format(self.mode))
+        self.lc = lcm.LCM("file:///home/levin/workspace/CodeSamples/lcm/src/data/logfile?mode={}&speed=15".format(self.mode))
         return
     def run(self):
         if self.mode == "w":
@@ -49,7 +49,8 @@ class TestLcmLog(object):
         msg.enabled = True
         msg.img.nWidth = 3
         msg.img.nHeight = 2
-        msg.img.gbImageData = np.arange(6).reshape(2,3).tolist()
+        img_data = np.arange(6, dtype=np.uint8).reshape(2,3)
+        msg.img.gbImageData = img_data.tolist()
         
         msg2 = point2d_list_t()
 #         msg2.npoints = 3

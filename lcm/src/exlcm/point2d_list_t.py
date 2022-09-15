@@ -12,10 +12,6 @@ import struct
 class point2d_list_t(object):
     __slots__ = ["npoints", "points"]
 
-    __typenames__ = ["int32_t", "double"]
-
-    __dimensions__ = [None, ["npoints", 2]]
-
     def __init__(self):
         self.npoints = 0
         self.points = []
@@ -27,9 +23,9 @@ class point2d_list_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">i", self.npoints))
+        buf.write(struct.pack("<i", self.npoints))
         for i0 in range(self.npoints):
-            buf.write(struct.pack('>2d', *self.points[i0][:2]))
+            buf.write(struct.pack('<2d', *self.points[i0][:2]))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -43,24 +39,25 @@ class point2d_list_t(object):
 
     def _decode_one(buf):
         self = point2d_list_t()
-        self.npoints = struct.unpack(">i", buf.read(4))[0]
+        self.npoints = struct.unpack("<i", buf.read(4))[0]
         self.points = []
         for i0 in range(self.npoints):
-            self.points.append(struct.unpack('>2d', buf.read(16)))
+            self.points.append(struct.unpack('<2d', buf.read(16)))
         return self
     _decode_one = staticmethod(_decode_one)
 
+    _hash = None
     def _get_hash_recursive(parents):
         if point2d_list_t in parents: return 0
         tmphash = (0x27c2e8f3ed17e2ca) & 0xffffffffffffffff
-        tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
+        tmphash  = (((tmphash<<1)&0xffffffffffffffff)  + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)
     _packed_fingerprint = None
 
     def _get_packed_fingerprint():
         if point2d_list_t._packed_fingerprint is None:
-            point2d_list_t._packed_fingerprint = struct.pack(">Q", point2d_list_t._get_hash_recursive([]))
+            point2d_list_t._packed_fingerprint = struct.pack("<Q", point2d_list_t._get_hash_recursive([]))
         return point2d_list_t._packed_fingerprint
     _get_packed_fingerprint = staticmethod(_get_packed_fingerprint)
 
