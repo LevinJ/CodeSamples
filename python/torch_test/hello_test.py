@@ -1,3 +1,6 @@
+print("ok")
+import types
+print("{}".format(types.__file__))
 import torch
 from torch import nn
 from torch.utils.data import DataLoader

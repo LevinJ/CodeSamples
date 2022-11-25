@@ -37,3 +37,4 @@ temp/
 python/tensorflow/logs/
 python/open3d_test/viewpoint.json
 python/torch_test/model.pth
+python/torch_test/runs/

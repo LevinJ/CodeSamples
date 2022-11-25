@@ -5,6 +5,9 @@ import numpy as np
 data = [[1, 2],[3, 4]]
 x_data = torch.tensor(data)
 
+if torch.cuda.is_available():
+    x_data = x_data.to("cuda")
+
 np_array = np.array(data)
 x_np = torch.from_numpy(np_array)
 
