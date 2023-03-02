@@ -9,6 +9,7 @@
 #include <opencv2/opencv.hpp>
 // #include "sensor_msgs/image_encodings.hpp"
 #include "sensor_msgs/msg/compressed_image.hpp"
+#include <cv_bridge/cv_bridge.h>
 // #include "sensor_msgs/msg/image.hpp"
 
 using namespace cv;
@@ -44,12 +45,19 @@ class MinimalPublisher : public rclcpp::Node
         Mat mat;
         mat = imread( img_file, 1 );
 
-        unsigned char * buf_data = mat.data;
+        //compress the image
+        std::vector<uchar> buff;//buffer for coding
+        std::vector<int> param(2);
+        param[0] = cv::IMWRITE_JPEG_QUALITY;
+        param[1] = 95;//default(95) 0-100
+        cv::imencode(".jpg", mat, buff, param);
+
+        unsigned char * buf_data = buff.data();
 
         auto img = std::make_unique<sensor_msgs::msg::CompressedImage>();
     // img->header = cinfo->header;
         img->format = "jpeg";
-        int buf_size = mat.total() * mat.elemSize();
+        int buf_size = buff.size();
         img->data.resize(buf_size);
         std::copy(buf_data, (buf_data) + (buf_size), img->data.begin());
         jpeg_pub_->publish(std::move(img));
@@ -59,6 +67,7 @@ class MinimalPublisher : public rclcpp::Node
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
     size_t count_;
     rclcpp::Publisher<sensor_msgs::msg::CompressedImage>::SharedPtr jpeg_pub_;
+    // sensor_msgs::CvBridge bridge_;
 };
 
 int main(int argc, char * argv[])
