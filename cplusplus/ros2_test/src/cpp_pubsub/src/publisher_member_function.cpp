@@ -10,6 +10,7 @@
 // #include "sensor_msgs/image_encodings.hpp"
 #include "sensor_msgs/msg/compressed_image.hpp"
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.hpp>
 #include "./TimerUtil.h"
 // #include "sensor_msgs/msg/image.hpp"
 
@@ -32,6 +33,7 @@ class MinimalPublisher : public rclcpp::Node
       500ms, std::bind(&MinimalPublisher::timer_callback, this));
 
         jpeg_pub_ =  this->create_publisher<sensor_msgs::msg::CompressedImage>("image_raw/compressed", 1);
+        pub_image_ = image_transport::create_publisher(this, "image_raw/uncompressed");
     }
 
   private:
@@ -55,8 +57,6 @@ class MinimalPublisher : public rclcpp::Node
         param[1] = 95;//default(95) 0-100
         cv::imencode(".jpg", mat, buff, param);
 
-        // unsigned char * buf_data = buff.data();
-
         
     // img->header = cinfo->header;
         img->format = "jpeg";
@@ -67,13 +67,18 @@ class MinimalPublisher : public rclcpp::Node
         timer.reset();
         jpeg_pub_->publish(std::move(img));
 
-        std::cout<<"publish time="<<timer.elapsed()<<std::endl;
+        std::cout<<"publish time 1="<<timer.elapsed()<<std::endl;
+
+        timer.reset();
+        pub_image_.publish(cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", mat).toImageMsg());    
+        std::cout<<"publish time 2="<<timer.elapsed()<<std::endl; 
 
     }
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
     size_t count_;
     rclcpp::Publisher<sensor_msgs::msg::CompressedImage>::SharedPtr jpeg_pub_;
+    image_transport::Publisher pub_image_;
     // sensor_msgs::CvBridge bridge_;
 };
 
