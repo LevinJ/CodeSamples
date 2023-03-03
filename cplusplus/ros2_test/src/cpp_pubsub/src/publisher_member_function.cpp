@@ -48,6 +48,8 @@ class MinimalPublisher : public rclcpp::Node
         Mat mat;
         mat = imread( img_file, 1 );
 
+        // cv::resize(mat, mat, cv::Size(), 0.5, 0.5);
+
         auto img = std::make_unique<sensor_msgs::msg::CompressedImage>();
         //compress the image
         semantic_slam::TimerUtil timer;
