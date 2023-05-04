@@ -2,6 +2,63 @@ import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from utility.poseinfo import PoseInfo
+import cv2
+
+class PlaneExtraction(object):
+    def __init__(self) -> None:
+        return 
+    def check_plane_projection(self, pnts, Twp):
+        xyzs = np.concatenate([pnts, np.ones((len(pnts), 1))], axis = 1)
+        plane_points = xyzs.dot(Twp.I.T.T)[:, :3]
+        print("prj pnts = {}".format(plane_points))
+
+        proj_plane_points = plane_points.copy()
+        proj_plane_points[:, 2] = 0
+        proj_plane_points = np.concatenate([proj_plane_points, np.ones((len(proj_plane_points), 1))], axis = 1)
+        proj_world_points = proj_plane_points.dot(Twp.T.T)[:, :3]
+        return  proj_world_points, proj_plane_points[:, :3]
+    def proj_pnts(self, pcs):
+        Y = pcs
+        pca = PCA(n_components=3)
+        pca.fit(Y)
+        V = pca.components_ 
+
+        xyz_mean = pcs.mean(axis = 0)
+        x_pca_axis, y_pca_axis = V[0, :], V[1, :]
+        z_pca_axis = np.cross(x_pca_axis, y_pca_axis)
+
+
+
+        #plane center to world frame
+        R = np.array([x_pca_axis, y_pca_axis, z_pca_axis])
+        R = R.T
+        t = xyz_mean
+        Twp = PoseInfo().construct_fromRt(R, t)
+        proj_world_points, plane_points = self.check_plane_projection(pcs, Twp)
+
+        return Twp, x_pca_axis, y_pca_axis, z_pca_axis, xyz_mean, proj_world_points, plane_points
+    def extract_bdbox(self, Twp, plane_points):
+        plane_points = plane_points[:, :2].astype(np.float32)
+        use_cv2 = False
+        box = []
+        if not use_cv2:
+            minx, maxx = plane_points[:, 0].min(), plane_points[:, 0].max()
+            miny, maxy = plane_points[:, 1].min(), plane_points[:, 1].max()
+        
+            box.append([minx, miny])
+            box.append([maxx, miny])
+            box.append([maxx, maxy])
+            box.append([minx, maxy])
+        else:
+            rect = cv2.minAreaRect(plane_points)
+            box = cv2.boxPoints(rect)
+        
+        box = np.concatenate([box, np.zeros((len(box), 1))], axis = 1)
+        box = np.concatenate([box, np.ones((len(box), 1))], axis = 1)
+
+        proj_box = box.dot(Twp.T.T)[:, :3]
+        return proj_box
+    
 
 class App(object):
     def __init__(self) -> None:
@@ -61,42 +118,32 @@ class App(object):
         res.append([1, 5, -0.1])
         res.append([1, 0, 0])
         return np.array(res)
+    def gen_rect2(self):
+        res = []
+        res.append([-1, 0, 0])
+        res.append([-1, 5, 0])
+        res.append([-1, 10, 0.1])
+        res.append([-2, 10, 0])
+        res.append([0, 13, 0])
+        res.append([2, 10, 0])
+        res.append([1, 10, -0.01])
+        res.append([1, 5, 0])
+        res.append([1, 0, 0])
+        return np.array(res)
     def transform_pnts(self, pnts, ypr = [20, 60, 130], t = [10, -10, 20]):
         Twb = PoseInfo().construct_fromyprt(ypr, t)
         xyzs = np.concatenate([pnts, np.ones((len(pnts), 1))], axis = 1)
         world_points = xyzs.dot(Twb.T.T)[:, :3]
         return world_points
-    def check_plane_projection(self, pnts, Twp):
-        xyzs = np.concatenate([pnts, np.ones((len(pnts), 1))], axis = 1)
-        plane_points = xyzs.dot(Twp.I.T.T)[:, :3]
-        print("prj pnts = {}".format(plane_points))
-
-        proj_plane_points = plane_points.copy()
-        proj_plane_points[:, 2] = 0
-        proj_plane_points = np.concatenate([proj_plane_points, np.ones((len(proj_plane_points), 1))], axis = 1)
-        proj_world_points = proj_plane_points.dot(Twp.T.T)[:, :3]
-        return  proj_world_points, proj_plane_points[:, :3]
-    def proj_pnts(self, pcs):
-        Y = pcs
-        pca = PCA(n_components=3)
-        pca.fit(Y)
-        V = pca.components_ * 3
-
-        xyz_mean = pcs.mean(axis = 0)
-        x_pca_axis, y_pca_axis, z_pca_axis = V[0, :], V[1, :], V[2, :]
-
-
-        #plane center to world frame
-        R = pca.components_.T
-        t = xyz_mean
-        Twp = PoseInfo().construct_fromRt(R, t)
-        proj_world_points, plane_points = self.check_plane_projection(pcs, Twp)
-
-        return x_pca_axis, y_pca_axis, z_pca_axis, xyz_mean, proj_world_points, plane_points
+    def draw_boundary(self, ax, pcs, connect = True, color = 'black'):
+        pcs = np.append(pcs, [pcs[0, :]], axis=0)
+        ax.plot(pcs[:, 0], pcs[:, 1], pcs[:, 2],   color = color, alpha=0.4)
+        return
+    
     def run(self):
-        pcs = self.gen_rect()
-        ypr = [40, 0, -0]
-        t = [2, 10, -50]
+        pcs = self.gen_rect2()
+        ypr = [-45, 5, -5]
+        t = [10, 20, -40]
         print("prev = {}".format(pcs))
         pcs = self.transform_pnts(pcs, ypr = ypr, t = t)
         print("after = {}".format(pcs))
@@ -104,13 +151,19 @@ class App(object):
         fig = plt.figure()
         plt.clf()
         ax = fig.add_subplot(111, projection="3d")
-        ax.plot(pcs[:, 0], pcs[:, 1], pcs[:, 2],   alpha=0.4)
 
-        x_pca_axis, y_pca_axis, z_pca_axis, xyz_mean, proj_world_points, plane_points = self.proj_pnts(pcs)
+        self.draw_boundary(ax, pcs, connect = True, color = 'black')
 
-        ax.plot(proj_world_points[:, 0], proj_world_points[:, 1], proj_world_points[:, 2],   alpha=0.4)
-
+        pe = PlaneExtraction()
+        Twp, x_pca_axis, y_pca_axis, z_pca_axis, xyz_mean, proj_world_points, plane_points = pe.proj_pnts(pcs)
         self.draw_axis(ax, x_pca_axis, y_pca_axis, z_pca_axis, translate=xyz_mean)
+        proj_box = pe.extract_bdbox(Twp, plane_points)
+
+        self.draw_boundary(ax, proj_box, connect = True, color = 'red')
+
+        # ax.plot(proj_world_points[:, 0], proj_world_points[:, 1], proj_world_points[:, 2],   alpha=0.4)
+
+        
 
         self.set_aspect_equal_3d(ax)
         plt.show()
