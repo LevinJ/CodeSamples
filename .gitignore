@@ -41,3 +41,5 @@ python/torch_test/runs/i
 log/
 .vscode/
 install/
+python/torch_test/MNIST/
+python/torch_test/lightning_logs/

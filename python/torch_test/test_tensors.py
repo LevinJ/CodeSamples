@@ -1,6 +1,9 @@
 import torch
 import numpy as np
 
+n = np.ones(5)
+t = torch.tensor(n)
+
 
 data = [[1, 2],[3, 4]]
 x_data = torch.tensor(data)
