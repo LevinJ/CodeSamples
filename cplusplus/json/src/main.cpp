@@ -33,6 +33,11 @@ int main()
     // add another object (using an initializer list of pairs)
     j["object"] = {{"currency", "USD"}, {"value", 42.99}};
 
+    std::vector<json> js;
+    js.push_back(j);
+    json j3 = j;
+    js.push_back(j3);
+
     // instead, you could also write (which looks very similar to the JSON above)
     json j2 = {
         {"pi", 3.141},
@@ -41,7 +46,7 @@ int main()
         {"nothing", nullptr},
         {"answer", {{"everything", 42}}},
         {"list", {1, 0, 2}},
-        {"json", j},
+        {"jsons", js},
         {"object", {{"currency", "USD"}, {"value", 42.99}}}};
 
     // std::string s = j2.dump(4);
