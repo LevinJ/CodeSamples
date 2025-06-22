@@ -131,14 +131,16 @@ class App(object):
 
         # Initialize each vertex to be white in color.
         verts_rgb = torch.ones_like(verts)[None]  # (1, V, 3)
-        textures = TexturesVertex(verts_features=verts_rgb.to(device))
+        textures = TexturesVertex(verts_features=verts_rgb)
 
         # Create a Meshes object
         mesh = Meshes(
-            verts=[verts.to(device)],   
-            faces=[faces.to(device)],
+            verts=[verts],   
+            faces=[faces],
             textures=textures
         )
+
+        mesh = mesh.to(device)
         R, T = look_at_view_transform(2.7, 0, [0, 180]) # 2 camera angles, front and back
         # Any instance of CamerasBase works, here we use FoVPerspectiveCameras
         cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
