@@ -1,0 +1,20 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch == 2.1.2
+torchvision == 0.16.2
+opencv-python
+numpy == 1.23.1
+xformers == 0.0.23.post1+cu118
+Pillow
+DateTime
+matplotlib
+plyfile
+HTML4Vision
+timm
+tensorboardX
+imgaug
+iopath
+imagecorruptions
+mmcv == 2.1.0
+mmsegmentation == 1.2.2
+mmengine == 0.10.7
+h5py
