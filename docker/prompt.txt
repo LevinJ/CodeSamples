@@ -2,7 +2,7 @@ Please help generate a docker file under /home/levin/workspace/CodeSamples/docke
 
 DOCKER_BUILDKIT=1 docker build -t levin-training-image .
 
-docker run -it --rm --gpus all --name=train_container_levin --shm-size=8g --network=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/levin:/home/levin  -v /media/levin:/media/levin  levin-training-image
+docker run -it --rm --gpus all --name=train_container_levin --shm-size=8g --network=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/levin:/home/levin -v /media/levin:/media/levin --privileged levin-training-image
 
 
 docker exec -it train_container_levin bash
