@@ -18,3 +18,4 @@ mmcv == 2.1.0
 mmsegmentation == 1.2.2
 mmengine == 0.10.7
 h5py
+tensorboard
