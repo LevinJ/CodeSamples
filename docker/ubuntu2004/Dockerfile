@@ -14,6 +14,7 @@ RUN apt-get update && \
         libgl1-mesa-glx \
         libglib2.0-0 \
         sudo \
+        gdb \
         openssh-client \
         nano \
         && rm -rf /var/lib/apt/lists/*
