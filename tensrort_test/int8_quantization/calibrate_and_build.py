@@ -155,8 +155,10 @@ if __name__ == "__main__":
     serialized_engine = builder.build_serialized_network(network, config)
     duration = time.time() - start_time
     if serialized_engine:
-        print("Calibration completed and engine built successfully.")
-        with open("./temp/resnet50_int8.engine", "wb") as f:
+        engine_path = "temp/resnet50_int8.engine"
+        engine_path = os.path.join(script_dir, engine_path)
+        print(f"Calibration completed and engine built successfully at {engine_path}")
+        with open(engine_path, "wb") as f:
             f.write(serialized_engine)
     else:
         print("Failed to build engine.")
