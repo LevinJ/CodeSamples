@@ -116,6 +116,11 @@ if __name__ == "__main__":
     onnx_model_path = "temp/resnet50-v2-7.onnx"
     calibration_cache_path = "temp/calibration.cache"
     calibration_data_dir = "temp/tiny-imagenet-200/test"
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    onnx_model_path = os.path.join(script_dir, onnx_model_path)
+    calibration_cache_path = os.path.join(script_dir, calibration_cache_path)
+    calibration_data_dir = os.path.join(script_dir, calibration_data_dir)
     batch_size = 8
 
     TRT_LOGGER = trt.Logger(trt.Logger.INFO)
