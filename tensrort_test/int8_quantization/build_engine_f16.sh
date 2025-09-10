@@ -1,0 +1,1 @@
+trtexec --onnx=./temp/resnet50-v2-7.onnx --saveEngine=./temp/resnet50_fp16.engine  --fp16 --profilingVerbosity=detailed --exportLayerInfo=./temp/resnet50_fp16.json

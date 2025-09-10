@@ -1,0 +1,1 @@
+polygraphy inspect model ./temp/resnet50_fp16.engine  --model-type engine --show layers

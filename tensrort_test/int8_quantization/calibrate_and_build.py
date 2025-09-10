@@ -1,3 +1,4 @@
+from debian import c
 import tensorrt as trt
 import numpy as np
 import os
@@ -136,13 +137,31 @@ if __name__ == "__main__":
                 print(parser.get_error(error))
             exit(1)
 
+    set_dynamic_range = False  # Set to True to manually set dynamic range
+    if set_dynamic_range:
+        # Set dynamic range for all tensors to [-128.0, 127.0]
+        for i in range(network.num_layers):
+            layer = network.get_layer(i)
+            for j in range(layer.num_outputs):
+                tensor = layer.get_output(j)
+                if tensor:
+                    tensor.set_dynamic_range(-128.0, 127.0)
+        # Set dynamic range for input tensors
+        for i in range(network.num_inputs):
+            input_tensor = network.get_input(i)
+            if input_tensor:
+                input_tensor.set_dynamic_range(-128.0, 127.0)
     # Set up INT8 calibration
     config = builder.create_builder_config()
     config.profiling_verbosity = trt.ProfilingVerbosity.DETAILED
     config.set_flag(trt.BuilderFlag.INT8)
+    # Enable FP16 precision in addition to INT8
+    config.set_flag(trt.BuilderFlag.FP16)
     dataset = CalibrationDataset(calibration_data_dir, batch_size)
     calibrator = MyCalibrator(dataset, calibration_cache_path)
-    config.int8_calibrator = calibrator
+    # Skip INT8 calibration since dynamic range is manually set
+    # Removed the calibrator and related configuration
+    # config.int8_calibrator = calibrator
 
     # Define an optimization profile for dynamic input shapes
     profile = builder.create_optimization_profile()
