@@ -20,9 +20,9 @@ RUN apt-get update && \
 
 
 # Copy requirements file and install Python packages
-COPY requirements_v2.txt /tmp/requirements_v2.txt
+COPY requirements_fs.txt /tmp/requirements_fs.txt
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip3 install --no-cache-dir -r /tmp/requirements_v2.txt
+    pip3 install --no-cache-dir -r /tmp/requirements_fs.txt
 
 # Make 'python' refer to 'python3'
 RUN ln -s /usr/bin/python3 /usr/bin/python
