@@ -10,3 +10,17 @@ docker run -it --rm --gpus all --name=train_container_levin --shm-size=128g --ne
 
 
 docker exec -it train_container_levin bash
+
+
+
+docker run --gpus all \
+  --ipc=host \
+  --network=host \
+  --rm \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /home/levin:/home/levin \
+  -v /media/levin:/media/levin \
+  --name modelscope_test \
+  -e DISPLAY=$DISPLAY\
+  -it fa28890759f2 \
+  bash
